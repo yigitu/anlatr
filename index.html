@@ -6,8 +6,21 @@
   <title>ANLA.TR — Anlatır</title>
   <link rel="icon" href="/anlatr/favicon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,200;1,9..144,300&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/anlatr/assets/index-Cz7Y8Omb.js"></script>
-  <link rel="stylesheet" crossorigin href="/anlatr/assets/index-DVLveaqa.css">
+  <script>
+    // Handle GitHub Pages SPA redirect from 404.html
+    (function(l) {
+      if (l.search[1] === '/') {
+        var decoded = l.search.slice(1).split('&').map(function(s) {
+          return s.replace(/~and~/g, '&');
+        }).join('?');
+        window.history.replaceState(null, null,
+          l.pathname.slice(0, -1) + decoded + l.hash
+        );
+      }
+    }(window.location));
+  </script>
+  <script type="module" crossorigin src="/anlatr/assets/index-BIqZOsDh.js"></script>
+  <link rel="stylesheet" crossorigin href="/anlatr/assets/index-CMKVth4r.css">
 </head>
 <body>
   <div id="root"></div>
