@@ -1,0 +1,853 @@
+
+---
+
+Now `project/anlatr.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ANLA.TR — Anlatır</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,200;1,9..144,300&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f2ed;
+  --white:#ffffff;
+  --ink:#0f0e17;
+  --ink2:#1c1b2b;
+  --surface:#ffffff;
+  --muted:#7a7888;
+  --dim:#b0aebb;
+  --border:#e3e0d8;
+  --border2:#ece9e2;
+  --teal:#0d9488;
+  --teal-l:#f0fdfb;
+  --teal-d:#0a7a70;
+  --amber:#d97706;
+  --amber-l:#fef3c7;
+  --blue:#2563eb;
+  --blue-l:#eff6ff;
+  --rose:#e11d48;
+  --rose-l:#fff1f3;
+  --purple:#7c3aed;
+  --purple-l:#f5f3ff;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+#root{min-height:100vh}
+.fr{font-family:'Fraunces',serif;font-optical-sizing:auto}
+::selection{background:#ccfbf1}
+input,button{outline:none;font-family:inherit}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:#d0cdc5;border-radius:2px}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.fu{animation:fu .45s cubic-bezier(.22,1,.36,1) both}
+.fi{animation:fi .2s ease both}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback,useMemo} = React;
+
+const CAT = {
+  "Ağ":        {c:"var(--blue)",   bg:"var(--blue-l)"},
+  "Ekonomi":   {c:"var(--amber)",  bg:"var(--amber-l)"},
+  "Güvenlik":  {c:"var(--rose)",   bg:"var(--rose-l)"},
+  "Teknoloji": {c:"var(--purple)", bg:"var(--purple-l)"},
+  "Yazılım":   {c:"var(--teal)",   bg:"var(--teal-l)"},
+};
+
+const IlluVLAN = ({compact}) => (
+  <svg viewBox="0 0 320 180" style={{width:'100%',height:'100%',display:'block'}}>
+    <rect width="320" height="180" fill="#0d1a2e"/>
+    {[0,1,2,3,4,5,6,7,8].map(i=><line key={'v'+i} x1={i*40} y1="0" x2={i*40} y2="180" stroke="rgba(59,130,246,0.06)" strokeWidth="1"/>)}
+    {[0,1,2,3,4].map(i=><line key={'h'+i} x1="0" y1={i*45} x2="320" y2={i*45} stroke="rgba(59,130,246,0.06)" strokeWidth="1"/>)}
+    <rect x="130" y="72" width="60" height="36" rx="5" fill="#1e3a5f" stroke="#3b82f6" strokeWidth="1.5"/>
+    <text x="160" y="87" textAnchor="middle" fill="#60a5fa" fontSize="8" fontFamily="monospace">SWITCH</text>
+    <text x="160" y="100" textAnchor="middle" fill="rgba(96,165,250,0.5)" fontSize="6.5" fontFamily="monospace">802.1Q</text>
+    {[[30,40],[30,100],[30,150]].map(([x,y],i)=>(
+      <g key={i}><rect x={x-18} y={y-13} width="36" height="26" rx="4" fill="#162844" stroke="#3b82f6" strokeWidth="1"/>
+      <text x={x} y={y-1} textAnchor="middle" fill="#93c5fd" fontSize="7" fontFamily="monospace">PC{i+1}</text>
+      <text x={x} y={y+9} textAnchor="middle" fill="rgba(147,197,253,0.45)" fontSize="5.5" fontFamily="monospace">V10</text>
+      <line x1={x+18} y1={y} x2="130" y2="90" stroke="#3b82f6" strokeWidth="1" strokeDasharray="3,2" opacity="0.5"/></g>
+    ))}
+    {[[285,40],[285,100],[285,150]].map(([x,y],i)=>(
+      <g key={i}><rect x={x-18} y={y-13} width="36" height="26" rx="4" fill="#1c1640" stroke="#818cf8" strokeWidth="1"/>
+      <text x={x} y={y-1} textAnchor="middle" fill="#a5b4fc" fontSize="7" fontFamily="monospace">PC{i+4}</text>
+      <text x={x} y={y+9} textAnchor="middle" fill="rgba(165,180,252,0.45)" fontSize="5.5" fontFamily="monospace">V20</text>
+      <line x1={x-18} y1={y} x2="190" y2="90" stroke="#818cf8" strokeWidth="1" strokeDasharray="3,2" opacity="0.5"/></g>
+    ))}
+    <rect x="5" y="5" width="50" height="15" rx="3" fill="rgba(59,130,246,0.18)"/><text x="30" y="16" textAnchor="middle" fill="#60a5fa" fontSize="7" fontFamily="monospace" fontWeight="bold">VLAN 10</text>
+    <rect x="265" y="5" width="50" height="15" rx="3" fill="rgba(129,140,248,0.18)"/><text x="290" y="16" textAnchor="middle" fill="#a5b4fc" fontSize="7" fontFamily="monospace" fontWeight="bold">VLAN 20</text>
+    <circle cx="160" cy="90" r="55" fill="none" stroke="rgba(59,130,246,0.1)" strokeWidth="25"/>
+  </svg>
+);
+const IlluWireGuard = () => (
+  <svg viewBox="0 0 320 180" style={{width:'100%',height:'100%',display:'block'}}>
+    <rect width="320" height="180" fill="#0a1a14"/>
+    <rect x="16" y="58" width="58" height="64" rx="6" fill="#0d2318" stroke="#22c55e" strokeWidth="1.5"/>
+    {[0,1,2].map(i=><rect key={i} x="24" y={68+i*12} width={[40,28,34][i]} height="5" rx="2" fill={`rgba(34,197,94,${[0.4,0.2,0.25][i]})`}/>)}
+    <circle cx="34" cy="108" r="4" fill="#22c55e" opacity="0.7"/>
+    <rect x="246" y="58" width="58" height="64" rx="6" fill="#0d2318" stroke="#22c55e" strokeWidth="1.5"/>
+    {[0,1,2].map(i=><rect key={i} x="254" y={68+i*12} width={[40,28,34][i]} height="5" rx="2" fill={`rgba(34,197,94,${[0.4,0.2,0.25][i]})`}/>)}
+    <circle cx="264" cy="108" r="4" fill="#22c55e" opacity="0.7"/>
+    <path d="M74 78 Q160 48 246 78" fill="none" stroke="rgba(34,197,94,0.25)" strokeWidth="7" strokeDasharray="4,3"/>
+    <path d="M74 102 Q160 132 246 102" fill="none" stroke="rgba(34,197,94,0.25)" strokeWidth="7" strokeDasharray="4,3"/>
+    <path d="M74 78 Q160 48 246 78" fill="none" stroke="#22c55e" strokeWidth="1.3" strokeDasharray="4,3"/>
+    <path d="M74 102 Q160 132 246 102" fill="none" stroke="#22c55e" strokeWidth="1.3" strokeDasharray="4,3"/>
+    <path d="M160 68 l-18 8v16c0 10 18 18 18 18s18-8 18-18V76z" fill="#0a2010" stroke="#22c55e" strokeWidth="1.5"/>
+    <path d="M153 92 l5 5 9-9" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    <text x="160" y="168" textAnchor="middle" fill="rgba(34,197,94,0.3)" fontSize="7" fontFamily="monospace">ChaCha20 · Curve25519</text>
+  </svg>
+);
+const IlluFaiz = () => (
+  <svg viewBox="0 0 320 180" style={{width:'100%',height:'100%',display:'block'}}>
+    <rect width="320" height="180" fill="#111008"/>
+    {[1,2,3,4].map(i=><line key={i} x1="38" y1={148-i*30} x2="290" y2={148-i*30} stroke="rgba(217,119,6,0.06)" strokeWidth="1"/>)}
+    {[{x:60,h:28},{x:100,h:48},{x:140,h:72},{x:180,h:96},{x:220,h:116},{x:260,h:132}].map(({x,h},i)=>(
+      <g key={i}>
+        <rect x={x-14} y={148-h} width="28" height={h} rx="3" fill={`rgba(217,119,6,${0.18+i*0.09})`} stroke="rgba(217,119,6,0.35)" strokeWidth="1"/>
+        <text x={x} y="162" textAnchor="middle" fill="rgba(217,119,6,0.4)" fontSize="6.5" fontFamily="monospace">{['Y1','Y2','Y3','Y4','Y5','Y6'][i]}</text>
+      </g>
+    ))}
+    <polyline points="60,120 100,100 140,76 180,52 220,32 260,16" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    {[60,100,140,180,220,260].map((x,i)=><circle key={i} cx={x} cy={[120,100,76,52,32,16][i]} r="3.5" fill="#d97706"/>)}
+    <circle cx="42" cy="155" r="13" fill="#1a1100" stroke="#d97706" strokeWidth="1.5"/><text x="42" y="160" textAnchor="middle" fill="#d97706" fontSize="13" fontFamily="serif">₺</text>
+    <text x="165" y="175" textAnchor="middle" fill="rgba(217,119,6,0.3)" fontSize="7" fontFamily="monospace">BİLEŞİK FAİZ BÜYÜME EĞRİSİ</text>
+    <line x1="38" y1="148" x2="290" y2="148" stroke="rgba(217,119,6,0.18)" strokeWidth="1"/>
+  </svg>
+);
+const IlluDNS = () => (
+  <svg viewBox="0 0 320 180" style={{width:'100%',height:'100%',display:'block'}}>
+    <rect width="320" height="180" fill="#120a1e"/>
+    <circle cx="160" cy="24" r="18" fill="#1e1035" stroke="#a78bfa" strokeWidth="1.5"/>
+    <text x="160" y="22" textAnchor="middle" fill="#a78bfa" fontSize="7.5" fontFamily="monospace">ROOT</text>
+    <text x="160" y="32" textAnchor="middle" fill="rgba(167,139,250,0.45)" fontSize="5.5" fontFamily="monospace">13 srv</text>
+    {[{x:72,label:'.com'},{x:160,label:'.net'},{x:248,label:'.tr'}].map(({x,label},i)=>(
+      <g key={i}>
+        <line x1="160" y1="42" x2={x} y2="72" stroke="rgba(167,139,250,0.25)" strokeWidth="1" strokeDasharray="3,2"/>
+        <rect x={x-20} y="72" width="40" height="22" rx="4" fill="#1e1035" stroke="#7c3aed" strokeWidth="1"/>
+        <text x={x} y="86" textAnchor="middle" fill="#c4b5fd" fontSize="9" fontFamily="monospace">{label}</text>
+      </g>
+    ))}
+    {[{x:48,parent:72},{x:96,parent:72},{x:194,parent:160},{x:248,parent:248},{x:290,parent:248}].map(({x,parent},i)=>(
+      <g key={i}>
+        <line x1={parent} y1="94" x2={x} y2="120" stroke="rgba(124,58,237,0.2)" strokeWidth="1" strokeDasharray="2,2"/>
+        <rect x={x-22} y="120" width="44" height="20" rx="3" fill="#160e30" stroke="rgba(124,58,237,0.35)" strokeWidth="1"/>
+        <text x={x} y="133" textAnchor="middle" fill="rgba(196,181,253,0.6)" fontSize="6" fontFamily="monospace">{['google','github','anla','metu','boun'][i]}.{i<2?'com':i===4?'edu':'tr'}</text>
+      </g>
+    ))}
+    <rect x="88" y="152" width="144" height="15" rx="3" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.18)" strokeWidth="1"/>
+    <text x="160" y="163" textAnchor="middle" fill="#a78bfa" fontSize="6.5" fontFamily="monospace">→ 142.250.74.46</text>
+  </svg>
+);
+const IlluVPN = () => (
+  <svg viewBox="0 0 320 180" style={{width:'100%',height:'100%',display:'block'}}>
+    <rect width="320" height="180" fill="#1a0808"/>
+    <circle cx="160" cy="88" r="66" fill="#160808" stroke="rgba(225,29,72,0.2)" strokeWidth="1"/>
+    {[-32,0,32].map((y,i)=><ellipse key={i} cx="160" cy={88+y} rx={Math.max(1,Math.sqrt(66*66-y*y))} ry="11" fill="none" stroke="rgba(225,29,72,0.08)" strokeWidth="1"/>)}
+    {[-30,0,30].map((x,i)=><ellipse key={i} cx={160+x} cy="88" rx="11" ry="66" fill="none" stroke="rgba(225,29,72,0.08)" strokeWidth="1"/>)}
+    <path d="M160 46 l-24 10v20c0 16 24 28 24 28s24-12 24-28V56z" fill="#2a0808" stroke="#e11d48" strokeWidth="2"/>
+    <path d="M151 78 l5.5 6.5 13-13" stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    {[[116,58],[204,108],[138,128],[188,52]].map(([x,y],i)=>(
+      <g key={i}><circle cx={x} cy={y} r="3" fill="rgba(225,29,72,0.55)"/>
+      <line x1={x} y1={y} x2="160" y2="76" stroke="rgba(225,29,72,0.2)" strokeWidth="1" strokeDasharray="2,2"/></g>
+    ))}
+    <text x="160" y="170" textAnchor="middle" fill="rgba(225,29,72,0.35)" fontSize="7" fontFamily="monospace">TRAFİĞİNİZ ŞİFRELENİYOR</text>
+  </svg>
+);
+const IlluSSH = () => (
+  <svg viewBox="0 0 320 180" style={{width:'100%',height:'100%',display:'block'}}>
+    <rect width="320" height="180" fill="#050f0a"/>
+    <rect x="14" y="14" width="292" height="154" rx="8" fill="#091408" stroke="rgba(34,197,94,0.2)" strokeWidth="1"/>
+    <rect x="14" y="14" width="292" height="24" rx="8" fill="#0e2010"/>
+    <rect x="14" y="26" width="292" height="12" fill="#0e2010"/>
+    <circle cx="32" cy="26" r="5" fill="#ef4444" opacity="0.65"/><circle cx="48" cy="26" r="5" fill="#eab308" opacity="0.65"/><circle cx="64" cy="26" r="5" fill="#22c55e" opacity="0.65"/>
+    <text x="160" y="30" textAnchor="middle" fill="rgba(34,197,94,0.3)" fontSize="7.5" fontFamily="monospace">ssh user@server — bash</text>
+    {[
+      {y:58,t:'$ ssh kullanici@192.168.1.100',c:'#22c55e'},
+      {y:73,t:"The authenticity of host can't be established.",c:'rgba(34,197,94,0.45)'},
+      {y:88,t:'Are you sure you want to continue? (yes) yes',c:'rgba(34,197,94,0.35)'},
+      {y:103,t:'Welcome to Ubuntu 22.04.3 LTS (GNU/Linux)',c:'rgba(34,197,94,0.45)'},
+      {y:118,t:'kullanici@server:~$ ls -la /var/www',c:'#22c55e'},
+      {y:133,t:'drwxr-xr-x  nginx  nginx  4096 Apr 24 09:31 html',c:'rgba(34,197,94,0.4)'},
+      {y:148,t:'kullanici@server:~$ █',c:'#22c55e'},
+    ].map(({y,t,c})=><text key={y} x="24" y={y} fill={c} fontSize="8" fontFamily="monospace">{t}</text>)}
+  </svg>
+);
+const IlluBlockchain = () => (
+  <svg viewBox="0 0 320 180" style={{width:'100%',height:'100%',display:'block'}}>
+    <rect width="320" height="180" fill="#0e0a1e"/>
+    {[{x:8,n:'#1',h:'3f8a',p:'0000'},{x:82,n:'#2',h:'7c2b',p:'3f8a'},{x:156,n:'#3',h:'a91d',p:'7c2b'},{x:230,n:'#4',h:'e4f2',p:'a91d'}].map(({x,n,h,p},i)=>(
+      <g key={i}>
+        {i>0&&<><line x1={x-2} y1="88" x2={x+2} y2="88" stroke="#7c3aed" strokeWidth="7" strokeLinecap="round"/><line x1={x-8} y1="88" x2={x-1} y2="88" stroke="rgba(124,58,237,0.45)" strokeWidth="1.5"/></>}
+        <rect x={x} y="44" width="72" height="88" rx="5" fill="#150e30" stroke="#7c3aed" strokeWidth="1.5"/>
+        <rect x={x} y="44" width="72" height="20" rx="5" fill="#1e1040"/>
+        <rect x={x+5} y="55" width="72" height="10" fill="#1e1040"/>
+        <text x={x+36} y="57" textAnchor="middle" fill="#a78bfa" fontSize="8" fontFamily="monospace" fontWeight="bold">BLOK {n}</text>
+        <text x={x+5} y="78" fill="rgba(167,139,250,0.4)" fontSize="5.5" fontFamily="monospace">HASH</text>
+        <text x={x+5} y="88" fill="#c4b5fd" fontSize="6.5" fontFamily="monospace">0x{h}…</text>
+        <text x={x+5} y="101" fill="rgba(167,139,250,0.4)" fontSize="5.5" fontFamily="monospace">PREV</text>
+        <text x={x+5} y="111" fill="rgba(196,181,253,0.5)" fontSize="6.5" fontFamily="monospace">0x{p}…</text>
+        <text x={x+5} y="124" fill="rgba(167,139,250,0.35)" fontSize="5.5" fontFamily="monospace">{[5,3,8,4][i]} TX</text>
+      </g>
+    ))}
+    <rect x="230" y="142" width="72" height="28" rx="5" fill="none" stroke="rgba(124,58,237,0.25)" strokeWidth="1" strokeDasharray="3,2"/>
+    <text x="266" y="159" textAnchor="middle" fill="rgba(167,139,250,0.25)" fontSize="7" fontFamily="monospace">#5 bekliyor…</text>
+  </svg>
+);
+const IlluTCPIP = () => (
+  <svg viewBox="0 0 320 180" style={{width:'100%',height:'100%',display:'block'}}>
+    <rect width="320" height="180" fill="#081218"/>
+    {[
+      {y:18,label:'Uygulama',color:'rgba(6,182,212,0.75)'},
+      {y:58,label:'TCP',color:'rgba(6,182,212,0.6)'},
+      {y:98,label:'IP',color:'rgba(6,182,212,0.45)'},
+      {y:138,label:'Ağ Erişim',color:'rgba(6,182,212,0.3)'},
+    ].map(({y,label,color},i)=>(
+      <g key={i}>
+        <rect x="14" y={y} width="180" height="34" rx="4" fill={`rgba(6,182,212,${0.04+i*0.01})`} stroke={color} strokeWidth="1"/>
+        <text x="104" y={y+21} textAnchor="middle" fill={color} fontSize="9.5" fontFamily="monospace">{label} Katmanı</text>
+        {[0,1,2].map(j=>(
+          <rect key={j} x={210+j*36} y={y+5} width="28" height="24" rx="3" fill={`rgba(6,182,212,${0.1+i*0.03})`} stroke={`rgba(6,182,212,${0.35-i*0.04})`} strokeWidth="1"/>
+        ))}
+        {[0,1,2].map(j=><text key={j} x={224+j*36} y={y+20} textAnchor="middle" fill={`rgba(6,182,212,${0.5-i*0.05})`} fontSize="6" fontFamily="monospace">PKT</text>)}
+      </g>
+    ))}
+    <path d="M203 18 L310 18 L310 172 L203 172" fill="none" stroke="rgba(6,182,212,0.1)" strokeWidth="1.5" strokeDasharray="3,2"/>
+    <text x="162" y="176" textAnchor="middle" fill="rgba(6,182,212,0.22)" fontSize="6.5" fontFamily="monospace">GÖNDERİCİ → ALICI</text>
+  </svg>
+);
+
+const ILLUS = {
+  'vlan-nedir': IlluVLAN, 'wireguard-nasil-calisir': IlluWireGuard,
+  'faiz-nedir': IlluFaiz, 'dns-nedir': IlluDNS, 'vpn-nedir': IlluVPN,
+  'ssh-nedir': IlluSSH, 'blockchain-nedir': IlluBlockchain, 'tcp-ip-nedir': IlluTCPIP,
+};
+
+const CONTENT = [
+  {id:'vlan-nedir',title:'VLAN nedir?',category:'Ağ',tags:['networking','güvenlik'],readMin:3,featured:true,
+   summary:'Fiziksel ağı mantıksal segmentlere bölerek cihazları birbirinden izole eden yapılandırma yöntemi.',
+   body:`Bir ofisi düşün. Muhasebe, yazılım ekibi ve misafir ağı aynı switch'e bağlı. Ama güvenlik açısından bu üç grubun birbirini görmemesi gerekiyor.
+
+**VLAN tam burada devreye girer.**
+
+VLAN (Virtual Local Area Network), tek bir fiziksel ağı birden fazla mantıksal ağa böler. Aynı switch'e bağlı cihazlar farklı VLAN'lara atanabilir ve birbirlerine erişemezler.
+
+**Nasıl çalışır?**
+
+Her ağ paketine bir VLAN etiketi (tag) eklenir. Switch bu etikete bakarak paketi doğru gruba yönlendirir.
+
+**Ne işe yarar?**
+
+- Güvenlik: Muhasebe verileri yazılım ekibinden izole edilir
+- Performans: Broadcast trafiği sadece ilgili VLAN içinde kalır
+- Yönetilebilirlik: Fiziksel kablo değişikliği olmadan ağ yeniden düzenlenir`},
+  {id:'wireguard-nasil-calisir',title:'WireGuard nasıl çalışır?',category:'Ağ',tags:['vpn','protokol'],readMin:4,featured:false,
+   summary:'4.000 satır kodla çalışan modern VPN protokolü. Daha az kod, daha az güvenlik açığı.',
+   body:`OpenVPN 70.000 satır kod içerirken WireGuard sadece yaklaşık 4.000 satırla çalışır. Daha az kod, daha az güvenlik açığı.
+
+**Çalışma mantığı**
+
+WireGuard şifreli bir tünel oluşturur. İki uç nokta birbirini public key ile tanır.
+
+**Neden hızlı?**
+
+WireGuard Linux çekirdeğinin içinde (kernel space) çalışır. Çok daha az gecikme.
+
+**Kurulum**
+
+Anahtar çifti oluşturulur. Public key'ler paylaşılır. IP'ler tanımlanır. Bitti.`},
+  {id:'faiz-nedir',title:'Faiz nedir?',category:'Ekonomi',tags:['finans','para'],readMin:3,featured:false,
+   summary:'Paranın zaman değerinden doğan maliyet. Borç alan öder, borç veren kazanır.',
+   body:`100 TL'nin bugün verilmesiyle 1 yıl sonra verilmesi aynı şey değildir. Bu fırsatın karşılığına faiz denir.
+
+**İki taraf**
+
+Borç alan için faiz, parayı kullanmanın maliyetidir. Borç veren için parayı elden çıkarmanın karşılığıdır.
+
+**Türleri**
+
+Basit faiz: Anapara × Oran × Süre.
+
+Bileşik faiz: Her dönem faiz anaparaya eklenir. Üstel büyüme yaratır.
+
+**Merkez bankası faizi**
+
+Bu oran düşükse kredi ucuzlar, piyasaya para girer. Yüksekse ekonomi yavaşlar, enflasyon baskılanır.`},
+  {id:'dns-nedir',title:'DNS nedir?',category:'Ağ',tags:['internet','protokol'],readMin:3,featured:false,
+   summary:'Alan adlarını IP adreslerine çeviren dağıtık hiyerarşik sistem. İnternetin telefon rehberi.',
+   body:`Her cihazın IP adresi var. Biz google.com yazarız. Bu çeviriyi DNS yapar.
+
+**Nasıl çalışır?**
+
+google.com → önbellek → DNS sunucusu → root → TLD → yetkili DNS. Milisaniyeler içinde.
+
+**Neden önemli?**
+
+DNS değiştirilirse siteye erişemezsin. Bazı ülkeler sitelerini DNS üzerinden engeller.
+
+**Güvenlik**
+
+Varsayılan DNS sağlayıcındır. Cloudflare (1.1.1.1) daha gizli bir alternatiftir.`},
+  {id:'vpn-nedir',title:'VPN nedir?',category:'Güvenlik',tags:['güvenlik','gizlilik'],readMin:3,featured:false,
+   summary:'İnternet trafiğini şifreleyerek kimliği ve konumu gizleyen sanal özel ağ.',
+   body:`Kafede halka açık WiFi'deyken biri trafiğini dinleyebilir. VPN bunu engeller.
+
+**Ne yapar?**
+
+Tüm trafik VPN sunucusu üzerinden geçer. Dışarıdan VPN sunucusunun adresi görünür.
+
+**Ne zaman?**
+
+- Güvenli olmayan ağlarda gizlilik
+- Coğrafi kısıtlamaları aşmak
+- Kurumsal ağa uzaktan bağlanmak
+
+**Sınırlamalar**
+
+Anonimlik garantisi vermez. Sağlayıcı log tutuyorsa verilerine erişilebilir.`},
+  {id:'ssh-nedir',title:'SSH nedir?',category:'Ağ',tags:['terminal','protokol'],readMin:4,featured:false,
+   summary:'Uzak sunucuya güvenli bağlanmayı sağlayan şifreli terminal protokolü.',
+   body:`Sunucunu fiziksel olarak karşında olmadan yönetmek istiyorsun. SSH bunun için.
+
+**İki yöntem**
+
+Şifre ile: Kullanıcı adı + şifre. Brute force'a açık.
+
+Anahtar çifti: Özel anahtar sende, genel anahtar sunucuda. Daha güvenli.
+
+**Neden şifreli?**
+
+SSH'den önce Telnet vardı — düz metin. SSH her şeyi şifreler.
+
+**Tünel**
+
+Port yönlendirme ile güvenli olmayan ağlarda tünel görevi görür.`},
+  {id:'blockchain-nedir',title:'Blockchain nedir?',category:'Teknoloji',tags:['kripto','veri yapısı'],readMin:4,featured:false,
+   summary:'Kriptografik bağlantılı, merkezi olmayan ve değiştirilemez dağıtık kayıt sistemi.',
+   body:`Geleneksel bankada kayıtlar bankanın kontrolündedir. Blockchain'de binlerce bilgisayarda tutulur.
+
+**Mantık**
+
+Her blok öncekinin hash'ini içerir. Bir bloku değiştirirsen zincir bozulur.
+
+**Merkeziyetsizlik**
+
+Binlerce node aynı kopyayı tutar. Tek nokta çökmesi sistemi etkilemez.
+
+**Uygulamalar**
+
+Bitcoin, Ethereum. Ayrıca tedarik zinciri, kimlik doğrulama gibi alanlarda kullanılır.`},
+  {id:'tcp-ip-nedir',title:'TCP/IP nedir?',category:'Ağ',tags:['internet','protokol'],readMin:3,featured:false,
+   summary:'İnternetin temel iletişim kuralı. Verinin nasıl paketlenip güvenilir biçimde iletileceğini tanımlar.',
+   body:`Mesaj tek parça gitmez. Küçük parçalara (paket) bölünür, farklı yollardan gider, birleştirilir.
+
+**İki katman**
+
+IP: Paketin nereye gideceğini belirler.
+
+TCP: Güvenilir iletimleri sağlar. Kayıp varsa tekrar gönderir.
+
+**UDP ne zaman?**
+
+Video görüşmesinde hız önceliklidir. UDP daha hızlı ama kayıplara toleranslıdır.`},
+];
+
+const FEATURED = CONTENT.find(c=>c.featured)||CONTENT[0];
+
+function formatBody(text){
+  return text.split('\n\n').map((para,i)=>{
+    if(para.startsWith('- ')){
+      const items=para.split('\n').filter(l=>l.startsWith('- ')).map(l=>l.slice(2));
+      return <ul key={i} style={{paddingLeft:'1.3rem',margin:'0 0 1.25rem'}}>{items.map((it,j)=><li key={j} style={{marginBottom:'0.35rem'}} dangerouslySetInnerHTML={{__html:it.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}}></li>)}</ul>;
+    }
+    const html=para.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`(.*?)`/g,'<code>$1</code>');
+    return <p key={i} style={{marginBottom:'1.25rem'}} dangerouslySetInnerHTML={{__html:html}}></p>;
+  });
+}
+function hl(text,q){
+  if(!q?.trim()) return text;
+  const esc=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const parts=text.split(new RegExp(`(${esc})`,'gi'));
+  return parts.map((p,i)=>p.toLowerCase()===q.toLowerCase()?<mark key={i} style={{background:'#ccfbf1',color:'var(--teal)',padding:'0 1px',borderRadius:'2px'}}>{p}</mark>:p);
+}
+
+const Bdg = ({label,sm}) => {
+  const m=CAT[label]||{c:'var(--muted)',bg:'#f0eeea'};
+  return <span style={{display:'inline-block',fontSize:sm?'0.6rem':'0.65rem',fontWeight:700,letterSpacing:'0.07em',textTransform:'uppercase',color:m.c,background:m.bg,padding:sm?'2px 7px':'3px 9px',borderRadius:'4px'}}>{label}</span>;
+};
+
+const Nav = ({onNav, onSearch}) => {
+  const [scrolled,setScrolled]=useState(false);
+  const [catOpen,setCatOpen]=useState(false);
+  useEffect(()=>{const fn=()=>setScrolled(window.scrollY>80);window.addEventListener('scroll',fn);return()=>window.removeEventListener('scroll',fn);},[]);
+  return (
+    <div style={{position:'fixed',top:0,left:0,right:0,zIndex:200,transition:'all .3s'}}>
+      <nav style={{
+        height:'52px',display:'flex',alignItems:'center',padding:'0 1.75rem',gap:'1.5rem',
+        background:scrolled?'rgba(244,242,237,0.96)':'rgba(15,14,23,1)',
+        backdropFilter:'blur(16px)',
+        borderBottom:`1px solid ${scrolled?'var(--border)':'rgba(255,255,255,0.07)'}`,
+        transition:'background .4s, border-color .4s',
+      }}>
+        <button onClick={()=>onNav('home')} style={{background:'none',border:'none',cursor:'pointer',padding:0,flexShrink:0}}>
+          <span className="fr" style={{fontSize:'1.1rem',fontWeight:600,letterSpacing:'-0.04em',color:scrolled?'var(--ink)':'white'}}>
+            ANLA<span style={{color:'var(--teal)'}}>.</span>TR
+          </span>
+        </button>
+        <div style={{flex:1,display:'flex',gap:'0',alignItems:'center'}}>
+          {['Bu Hafta','Hakkımızda'].map(l=>(
+            <button key={l} onClick={l==='Bu Hafta'?()=>onNav('home'):undefined}
+              style={{background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontSize:'0.82rem',fontWeight:500,color:scrolled?'var(--muted)':'rgba(255,255,255,0.5)',padding:'0.4rem 0.75rem',borderRadius:'6px',transition:'color .12s,background .12s'}}
+              onMouseEnter={e=>{e.currentTarget.style.color=scrolled?'var(--ink)':'white';e.currentTarget.style.background=scrolled?'rgba(0,0,0,0.05)':'rgba(255,255,255,0.06)';}}
+              onMouseLeave={e=>{e.currentTarget.style.color=scrolled?'var(--muted)':'rgba(255,255,255,0.5)';e.currentTarget.style.background='none';}}
+            >{l}</button>
+          ))}
+          <div style={{position:'relative'}} onMouseEnter={()=>setCatOpen(true)} onMouseLeave={()=>setCatOpen(false)}>
+            <button style={{background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontSize:'0.82rem',fontWeight:500,color:scrolled?'var(--muted)':'rgba(255,255,255,0.5)',padding:'0.4rem 0.75rem',borderRadius:'6px',display:'inline-flex',alignItems:'center',gap:'3px',transition:'color .12s,background .12s'}}
+              onMouseEnter={e=>{e.currentTarget.style.color=scrolled?'var(--ink)':'white';e.currentTarget.style.background=scrolled?'rgba(0,0,0,0.05)':'rgba(255,255,255,0.06)';}}
+              onMouseLeave={e=>{e.currentTarget.style.color=scrolled?'var(--muted)':'rgba(255,255,255,0.5)';e.currentTarget.style.background='none';}}
+            >
+              Kategoriler
+              <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 3L4.5 6 7.5 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+            {catOpen&&(
+              <div className="fi" style={{position:'absolute',top:'calc(100%+4px)',left:0,background:'white',border:'1px solid var(--border)',borderRadius:'10px',overflow:'hidden',minWidth:'180px',boxShadow:'0 16px 40px rgba(0,0,0,0.12)',zIndex:300,marginTop:'4px'}}>
+                {Object.entries(CAT).map(([cat,m])=>(
+                  <button key={cat} onClick={()=>{onNav('home',null,'',cat);setCatOpen(false);}}
+                    style={{width:'100%',display:'flex',alignItems:'center',gap:'8px',padding:'0.55rem 1rem',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontSize:'0.83rem',color:'var(--ink)',textAlign:'left',transition:'background .1s'}}
+                    onMouseEnter={e=>e.currentTarget.style.background='var(--bg)'}
+                    onMouseLeave={e=>e.currentTarget.style.background='none'}
+                  >
+                    <span style={{width:7,height:7,borderRadius:'50%',background:m.c,display:'inline-block',flexShrink:0}}></span>
+                    {cat}
+                    <span style={{marginLeft:'auto',fontSize:'0.72rem',color:'var(--dim)'}}>{CONTENT.filter(c=>c.category===cat).length}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:'0.6rem'}}>
+          <button onClick={onSearch} style={{background:'none',border:`1px solid ${scrolled?'var(--border)':'rgba(255,255,255,0.12)'}`,cursor:'pointer',color:scrolled?'var(--muted)':'rgba(255,255,255,0.45)',padding:'5px 10px',borderRadius:'7px',display:'flex',alignItems:'center',gap:'5px',fontSize:'0.78rem',fontFamily:'inherit',transition:'all .15s'}}
+            onMouseEnter={e=>{e.currentTarget.style.borderColor=scrolled?'var(--teal)':'rgba(255,255,255,0.3)';e.currentTarget.style.color=scrolled?'var(--teal)':'white';}}
+            onMouseLeave={e=>{e.currentTarget.style.borderColor=scrolled?'var(--border)':'rgba(255,255,255,0.12)';e.currentTarget.style.color=scrolled?'var(--muted)':'rgba(255,255,255,0.45)';}}
+          >
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="1.5"/><path d="M13 13l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            Ara
+          </button>
+          <button onClick={()=>onNav('subscribe')} style={{background:'var(--teal)',color:'white',border:'none',padding:'0.38rem 1rem',borderRadius:'7px',fontSize:'0.78rem',fontWeight:700,cursor:'pointer',fontFamily:'inherit',transition:'background .15s,transform .1s'}}
+            onMouseEnter={e=>{e.currentTarget.style.background='var(--teal-d)';e.currentTarget.style.transform='translateY(-1px)';}}
+            onMouseLeave={e=>{e.currentTarget.style.background='var(--teal)';e.currentTarget.style.transform='none';}}
+          >Abone Ol</button>
+        </div>
+      </nav>
+    </div>
+  );
+};
+
+const SearchOverlay = ({onClose,onNav}) => {
+  const [q,setQ]=useState('');
+  const ref=useRef(null);
+  const results=useMemo(()=>!q.trim()?[]:CONTENT.filter(c=>c.title.toLowerCase().includes(q.toLowerCase())||c.summary.toLowerCase().includes(q.toLowerCase())),[q]);
+  useEffect(()=>{setTimeout(()=>ref.current?.focus(),50);},[]);
+  return (
+    <div className="fi" onClick={e=>{if(e.target===e.currentTarget)onClose();}}
+      style={{position:'fixed',inset:0,zIndex:1000,background:'rgba(15,14,23,0.88)',backdropFilter:'blur(16px)',display:'flex',flexDirection:'column',alignItems:'center',paddingTop:'15vh',padding:'15vh 1.5rem 2rem'}}>
+      <div style={{width:'100%',maxWidth:'560px'}}>
+        <div style={{position:'relative',marginBottom:'1rem'}}>
+          <svg style={{position:'absolute',left:'0.9rem',top:'50%',transform:'translateY(-50%)',opacity:0.3,pointerEvents:'none'}} width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="white" strokeWidth="1.5"/><path d="M13 13l4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          <input ref={ref} type="text" value={q} onChange={e=>setQ(e.target.value)} placeholder="Ne anlamak istiyorsun?"
+            style={{width:'100%',padding:'0.85rem 2.5rem',fontSize:'0.95rem',background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.12)',borderRadius:'10px',color:'white',fontFamily:'inherit'}}
+            onFocus={e=>e.target.style.borderColor='rgba(13,148,136,0.5)'}
+            onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.12)'}
+          />
+          <button onClick={onClose} style={{position:'absolute',right:'0.85rem',top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',color:'rgba(255,255,255,0.3)',fontSize:'1.2rem',lineHeight:1,padding:'4px'}}>×</button>
+        </div>
+        {results.map(item=>(
+          <button key={item.id} onClick={()=>{onNav('content',item.id);onClose();}}
+            style={{width:'100%',display:'flex',alignItems:'center',gap:'0.85rem',padding:'0.7rem 0.85rem',borderRadius:'8px',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',textAlign:'left',transition:'background .12s'}}
+            onMouseEnter={e=>e.currentTarget.style.background='rgba(255,255,255,0.06)'}
+            onMouseLeave={e=>e.currentTarget.style.background='none'}
+          >
+            <div style={{width:'52px',height:'38px',borderRadius:'5px',overflow:'hidden',flexShrink:0}}>
+              {React.createElement(ILLUS[item.id]||IlluVLAN)}
+            </div>
+            <div style={{flex:1}}>
+              <p style={{fontSize:'0.88rem',fontWeight:600,color:'white',marginBottom:'1px'}}>{hl(item.title,q)}</p>
+              <p style={{fontSize:'0.74rem',color:'rgba(255,255,255,0.38)',lineHeight:1.3}}>{item.summary.slice(0,70)}…</p>
+            </div>
+            <Bdg label={item.category} sm/>
+          </button>
+        ))}
+        {!q.trim()&&(
+          <p style={{textAlign:'center',color:'rgba(255,255,255,0.2)',fontSize:'0.82rem',marginTop:'1rem'}}>Ara veya ⌘K ile aç</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const HeaderBand = ({onNav}) => (
+  <div style={{paddingTop:'52px',background:'var(--ink2)',borderBottom:'1px solid rgba(255,255,255,0.07)'}}>
+    <div style={{maxWidth:'1240px',margin:'0 auto',padding:'2rem 2rem 1.75rem',display:'flex',alignItems:'flex-end',gap:'3rem'}}>
+      <div style={{flex:1}}>
+        <div style={{display:'flex',alignItems:'baseline',gap:'0.75rem',marginBottom:'0.4rem'}}>
+          <h1 className="fr" style={{fontSize:'clamp(1.8rem,3vw,2.8rem)',fontWeight:300,letterSpacing:'-0.04em',color:'white',lineHeight:1}}>anla.tr</h1>
+          <span className="fr" style={{fontSize:'clamp(1.4rem,2.2vw,2rem)',fontWeight:200,fontStyle:'italic',color:'var(--teal)',letterSpacing:'-0.02em',lineHeight:1}}>anlatır.</span>
+        </div>
+        <p style={{fontSize:'0.8rem',color:'rgba(255,255,255,0.3)',letterSpacing:'0.01em'}}>Karmaşık konuları kısa, net ve anlaşılır biçimde açıklayan Türkçe içerik platformu.</p>
+      </div>
+      <button onClick={()=>onNav('content',FEATURED.id)}
+        style={{display:'flex',alignItems:'center',gap:'0.85rem',padding:'0.75rem 1rem',background:'rgba(255,255,255,0.05)',border:'1px solid rgba(255,255,255,0.1)',borderRadius:'10px',cursor:'pointer',fontFamily:'inherit',textAlign:'left',flexShrink:0,maxWidth:'340px',transition:'background .15s,border-color .15s'}}
+        onMouseEnter={e=>{e.currentTarget.style.background='rgba(13,148,136,0.12)';e.currentTarget.style.borderColor='rgba(13,148,136,0.3)';}}
+        onMouseLeave={e=>{e.currentTarget.style.background='rgba(255,255,255,0.05)';e.currentTarget.style.borderColor='rgba(255,255,255,0.1)';}}
+      >
+        <div style={{width:'56px',height:'40px',borderRadius:'5px',overflow:'hidden',flexShrink:0}}>
+          {React.createElement(ILLUS[FEATURED.id]||IlluVLAN)}
+        </div>
+        <div>
+          <p style={{fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.09em',textTransform:'uppercase',color:'var(--teal)',marginBottom:'2px'}}>HAFTANIN KONUSU</p>
+          <p style={{fontSize:'0.82rem',fontWeight:600,color:'white',lineHeight:1.25}}>{FEATURED.title}</p>
+          <p style={{fontSize:'0.72rem',color:'rgba(255,255,255,0.35)',marginTop:'2px'}}>{FEATURED.readMin} dk okuma</p>
+        </div>
+      </button>
+    </div>
+  </div>
+);
+
+const CatStrip = ({active,setActive}) => (
+  <div style={{position:'sticky',top:'52px',zIndex:100,background:'var(--white)',borderBottom:'1px solid var(--border)',padding:'0 2rem',display:'flex',gap:'0',overflowX:'auto'}}>
+    {['Tümü',...Object.keys(CAT)].map(cat=>{
+      const on=active===cat;
+      const m=CAT[cat];
+      return (
+        <button key={cat} onClick={()=>setActive(cat)} style={{
+          padding:'0.65rem 1rem',fontSize:'0.8rem',fontWeight:on?600:500,
+          background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',
+          color:on?(m?.c||'var(--teal)'):'var(--muted)',
+          borderBottom:on?`2px solid ${m?.c||'var(--teal)'}`:' 2px solid transparent',
+          transition:'color .15s,border-color .15s',marginBottom:'-1px',
+        }}>{cat}</button>
+      );
+    })}
+  </div>
+);
+
+const BentoCard = ({item,span,tall,idx,onClick}) => {
+  const [hov,setHov]=useState(false);
+  const m=CAT[item.category]||{c:'var(--teal)',bg:'var(--teal-l)'};
+  const Illu=ILLUS[item.id];
+  return (
+    <div onClick={onClick} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      className="fu"
+      style={{
+        gridColumn:`span ${span}`,background:'var(--white)',
+        border:`1px solid ${hov?m.c:'var(--border)'}`,borderRadius:'12px',overflow:'hidden',cursor:'pointer',
+        display:'flex',flexDirection:'column',
+        transition:'border-color .18s,box-shadow .18s,transform .18s',
+        boxShadow:hov?`0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px ${m.c}20`:'0 1px 3px rgba(0,0,0,0.04)',
+        transform:hov?'translateY(-2px)':'none',animationDelay:`${idx*0.035}s`,
+      }}>
+      <div style={{position:'relative',overflow:'hidden',height:tall?'220px':'150px',background:'#0a0a12',flexShrink:0}}>
+        {Illu&&<Illu/>}
+        <div style={{position:'absolute',bottom:0,left:0,right:0,height:'60px',background:'linear-gradient(to top,var(--white),transparent)',pointerEvents:'none'}}></div>
+        <div style={{position:'absolute',top:'10px',left:'10px'}}><Bdg label={item.category} sm/></div>
+        <div style={{position:'absolute',top:'10px',right:'10px',fontSize:'0.68rem',color:'rgba(255,255,255,0.4)',background:'rgba(0,0,0,0.3)',padding:'2px 7px',borderRadius:'20px'}}>{item.readMin} dk</div>
+      </div>
+      <div style={{padding:tall?'1.15rem 1.35rem 1.2rem':'0.9rem 1.1rem 1rem',flex:1,display:'flex',flexDirection:'column',gap:'0.4rem'}}>
+        <h3 className="fr" style={{fontSize:tall?'1.15rem':'0.97rem',fontWeight:400,letterSpacing:'-0.025em',lineHeight:1.2,color:'var(--ink)'}}>{item.title}</h3>
+        {tall&&<p style={{fontSize:'0.82rem',color:'var(--muted)',lineHeight:1.6,flex:1}}>{item.summary}</p>}
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',paddingTop:tall?'0.6rem':'0.4rem',borderTop:'1px solid var(--border2)',marginTop:'auto'}}>
+          <div style={{display:'flex',gap:'3px'}}>
+            {item.tags.slice(0,tall?2:1).map(t=><span key={t} style={{fontSize:'0.63rem',color:'var(--dim)',border:'1px solid var(--border)',padding:'1px 6px',borderRadius:'20px'}}>#{t}</span>)}
+          </div>
+          <span style={{fontSize:'0.72rem',fontWeight:600,color:hov?m.c:'var(--dim)',display:'flex',alignItems:'center',gap:'2px',transition:'color .15s'}}>
+            Oku <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BentoGrid = ({items,onNav}) => {
+  const [first,...rest] = items;
+  if(items.length===0) return <div style={{padding:'3rem',textAlign:'center',color:'var(--muted)'}}>Bu kategoride içerik bulunamadı.</div>;
+  return (
+    <div style={{display:'grid',gridTemplateColumns:'repeat(12,1fr)',gap:'1rem',padding:'1.5rem 2rem 3rem',maxWidth:'1240px',margin:'0 auto'}}>
+      {items.map((item,i) => {
+        const span = i===0?7:i===1?5:4;
+        const tall = i===0;
+        return <BentoCard key={item.id} item={item} span={span} tall={tall} idx={i} onClick={()=>onNav('content',item.id)}/>;
+      })}
+    </div>
+  );
+};
+
+function HomePage({initCat,onNav}){
+  const [cat,setCat]=useState(initCat||'Tümü');
+  useEffect(()=>setCat(initCat||'Tümü'),[initCat]);
+  const list=useMemo(()=>cat==='Tümü'?CONTENT:CONTENT.filter(c=>c.category===cat),[cat]);
+  return (
+    <div>
+      <HeaderBand onNav={onNav}/>
+      <CatStrip active={cat} setActive={setCat}/>
+      <div style={{background:'var(--bg)'}}><BentoGrid items={list} onNav={onNav}/></div>
+      <NewsletterBand/>
+      <Footer onNav={onNav}/>
+    </div>
+  );
+}
+
+const NewsletterBand = () => {
+  const [email,setEmail]=useState('');
+  const [done,setDone]=useState(false);
+  return (
+    <div style={{background:'var(--ink2)',padding:'3rem 2rem',borderTop:'1px solid rgba(255,255,255,0.06)'}}>
+      <div style={{maxWidth:'1240px',margin:'0 auto',display:'flex',alignItems:'center',gap:'3rem',flexWrap:'wrap'}}>
+        <div style={{flex:1,minWidth:'200px'}}>
+          <p style={{fontSize:'0.65rem',fontWeight:700,letterSpacing:'0.12em',textTransform:'uppercase',color:'var(--teal)',marginBottom:'0.5rem'}}>Bülten</p>
+          <h3 className="fr" style={{fontSize:'1.5rem',fontWeight:300,letterSpacing:'-0.03em',color:'white',marginBottom:'0.35rem'}}>Zihninizi Güncel Tutun.</h3>
+          <p style={{fontSize:'0.8rem',color:'rgba(255,255,255,0.3)'}}>Her hafta yeni bir konu. Sade, gereksiz detaysız.</p>
+        </div>
+        <div style={{flex:1,minWidth:'280px'}}>
+          {!done?(
+            <div style={{display:'flex',gap:'0.5rem'}}>
+              <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="E-posta adresiniz"
+                style={{flex:1,padding:'0.65rem 0.9rem',border:'1px solid rgba(255,255,255,0.1)',borderRadius:'7px',fontSize:'0.83rem',fontFamily:'inherit',background:'rgba(255,255,255,0.06)',color:'white',transition:'border-color .15s'}}
+                onFocus={e=>e.target.style.borderColor='rgba(13,148,136,0.4)'}
+                onBlur={e=>e.target.style.borderColor='rgba(255,255,255,0.1)'}
+                onKeyDown={e=>e.key==='Enter'&&email.includes('@')&&setDone(true)}
+              />
+              <button onClick={()=>{if(email.includes('@'))setDone(true);}} style={{background:'var(--teal)',color:'white',border:'none',padding:'0.65rem 1.15rem',borderRadius:'7px',fontSize:'0.82rem',fontWeight:700,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'background .15s'}}
+                onMouseEnter={e=>e.currentTarget.style.background='var(--teal-d)'}
+                onMouseLeave={e=>e.currentTarget.style.background='var(--teal)'}
+              >ABONE OL</button>
+            </div>
+          ):(
+            <div className="fi" style={{display:'inline-flex',alignItems:'center',gap:'0.5rem',padding:'0.65rem 1rem',background:'rgba(13,148,136,0.1)',border:'1px solid rgba(13,148,136,0.25)',borderRadius:'7px'}}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7l3.5 3.5L11.5 3" stroke="var(--teal)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <span style={{fontSize:'0.83rem',color:'var(--teal)'}}>Abone oldun, teşekkürler!</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Footer = ({onNav}) => (
+  <footer style={{background:'var(--ink)',borderTop:'1px solid rgba(255,255,255,0.05)',padding:'2.5rem 2rem 2rem'}}>
+    <div style={{maxWidth:'1240px',margin:'0 auto'}}>
+      <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr',gap:'2rem',marginBottom:'2rem'}}>
+        <div>
+          <span className="fr" style={{fontSize:'1rem',fontWeight:600,letterSpacing:'-0.04em',color:'white'}}>ANLA<span style={{color:'var(--teal)'}}>.</span>TR</span>
+          <p style={{fontSize:'0.75rem',color:'rgba(255,255,255,0.25)',marginTop:'0.5rem',lineHeight:1.65,maxWidth:'210px'}}>Türkçe içerik platformu. Karmaşık konuları kısa ve net biçimde açıklar.</p>
+        </div>
+        {[{t:'YAYIN',l:['Bu Hafta','Arşiv','Kategoriler','Bülten']},{t:'YASAL',l:['Gizlilik Politikası','Kullanım Şartları']},{t:'BAĞLANTI',l:['İletişim','Twitter/X','RSS']}].map(col=>(
+          <div key={col.t}>
+            <p style={{fontSize:'0.6rem',fontWeight:700,letterSpacing:'0.11em',color:'rgba(255,255,255,0.2)',marginBottom:'0.75rem'}}>{col.t}</p>
+            {col.l.map(l=><button key={l} style={{display:'block',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontSize:'0.78rem',color:'rgba(255,255,255,0.38)',padding:'0.2rem 0',transition:'color .12s'}} onMouseEnter={e=>e.currentTarget.style.color='white'} onMouseLeave={e=>e.currentTarget.style.color='rgba(255,255,255,0.38)'}>{l}</button>)}
+          </div>
+        ))}
+      </div>
+      <div style={{borderTop:'1px solid rgba(255,255,255,0.05)',paddingTop:'1.25rem',display:'flex',justifyContent:'space-between'}}>
+        <span style={{fontSize:'0.7rem',color:'rgba(255,255,255,0.18)'}}>© 2025 anla.tr — Bütün hakları saklıdır.</span>
+        <span style={{fontSize:'0.7rem',color:'rgba(255,255,255,0.18)'}}>Türkçe · Teknik · Ekonomi · Teknoloji</span>
+      </div>
+    </div>
+  </footer>
+);
+
+const MiniSub=()=>{
+  const [e,setE]=useState('');
+  const [done,setDone]=useState(false);
+  if(done) return <p style={{fontSize:'0.8rem',color:'var(--teal)'}}>Abone oldun!</p>;
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:'0.45rem'}}>
+      <input type="email" value={e} onChange={ev=>setE(ev.target.value)} placeholder="E-posta adresiniz"
+        style={{width:'100%',padding:'0.5rem 0.75rem',border:'1px solid rgba(255,255,255,0.1)',borderRadius:'6px',fontSize:'0.78rem',fontFamily:'inherit',background:'rgba(255,255,255,0.06)',color:'white'}}
+        onFocus={ev=>ev.target.style.borderColor='rgba(13,148,136,0.4)'}
+        onBlur={ev=>ev.target.style.borderColor='rgba(255,255,255,0.1)'}
+      />
+      <button onClick={()=>{if(e.includes('@'))setDone(true);}} style={{width:'100%',background:'var(--teal)',color:'white',border:'none',padding:'0.5rem',borderRadius:'6px',fontSize:'0.78rem',fontWeight:700,cursor:'pointer',fontFamily:'inherit',transition:'background .15s'}}
+        onMouseEnter={ev=>ev.currentTarget.style.background='var(--teal-d)'}
+        onMouseLeave={ev=>ev.currentTarget.style.background='var(--teal)'}
+      >Kayıt Ol</button>
+    </div>
+  );
+};
+
+function ContentPage({itemId,onNav}){
+  const item=CONTENT.find(c=>c.id===itemId);
+  useEffect(()=>{window.scrollTo(0,0);},[itemId]);
+  if(!item) return null;
+  const m=CAT[item.category]||{c:'var(--teal)',bg:'var(--teal-l)'};
+  const Illu=ILLUS[item.id];
+  const related=CONTENT.filter(c=>c.id!==itemId&&c.category===item.category).slice(0,4);
+  return (
+    <div style={{paddingTop:'52px',minHeight:'100vh',background:'var(--bg)'}}>
+      <div style={{background:'white',borderBottom:'1px solid var(--border)',padding:'2rem 2rem 1.75rem'}}>
+        <div style={{maxWidth:'1240px',margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 320px',gap:'3rem',alignItems:'center'}}>
+          <div>
+            <div style={{display:'flex',alignItems:'center',gap:'0.6rem',marginBottom:'1rem'}}>
+              <button onClick={()=>onNav('home')} style={{background:'none',border:'none',cursor:'pointer',display:'inline-flex',alignItems:'center',gap:'4px',fontSize:'0.78rem',fontWeight:500,color:'var(--muted)',padding:0,fontFamily:'inherit',transition:'color .12s'}}
+                onMouseEnter={e=>e.currentTarget.style.color='var(--ink)'}
+                onMouseLeave={e=>e.currentTarget.style.color='var(--muted)'}
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 2L3 6l5 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Tüm konular
+              </button>
+              <span style={{color:'var(--border)'}}>·</span>
+              <Bdg label={item.category}/>
+              <span style={{color:'var(--border)'}}>·</span>
+              <span style={{fontSize:'0.72rem',color:'var(--muted)',display:'flex',alignItems:'center',gap:'3px'}}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5"/><path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                {item.readMin} dakika okuma
+              </span>
+            </div>
+            <h1 className="fr" style={{fontSize:'clamp(1.6rem,3vw,2.4rem)',fontWeight:300,letterSpacing:'-0.04em',lineHeight:1.1,color:'var(--ink)',marginBottom:'1rem'}}>{item.title}</h1>
+            <div style={{borderLeft:`3px solid ${m.c}`,paddingLeft:'1rem'}}>
+              <p className="fr" style={{fontSize:'1rem',fontWeight:300,fontStyle:'italic',color:'var(--muted)',lineHeight:1.6}}>{item.summary}</p>
+            </div>
+          </div>
+          <div style={{height:'160px',borderRadius:'10px',overflow:'hidden',border:'1px solid var(--border)',background:'#0a0a12'}}>
+            {Illu&&<Illu/>}
+          </div>
+        </div>
+      </div>
+      <div style={{maxWidth:'1240px',margin:'0 auto',padding:'2.5rem 2rem 4rem',display:'grid',gridTemplateColumns:'1fr 280px',gap:'3rem',alignItems:'start'}}>
+        <div style={{background:'white',borderRadius:'12px',border:'1px solid var(--border)',padding:'2rem 2.25rem'}}>
+          <div style={{fontSize:'0.95rem',lineHeight:1.85,color:'var(--ink)'}}>
+            <style>{`.ab code{font-family:'Courier New',monospace;font-size:.875em;background:var(--bg);padding:2px 7px;border-radius:4px;color:var(--teal)}.ab strong{font-weight:600}`}</style>
+            <div className="ab">{formatBody(item.body)}</div>
+          </div>
+          <div style={{marginTop:'2rem',paddingTop:'1.25rem',borderTop:'1px solid var(--border2)',display:'flex',gap:'0.5rem',flexWrap:'wrap',alignItems:'center'}}>
+            <span style={{fontSize:'0.72rem',color:'var(--dim)',marginRight:'0.25rem'}}>Etiketler:</span>
+            {item.tags.map(t=><span key={t} style={{fontSize:'0.72rem',color:'var(--muted)',border:'1px solid var(--border)',padding:'2px 8px',borderRadius:'20px'}}>#{t}</span>)}
+          </div>
+        </div>
+        <div style={{position:'sticky',top:'72px',display:'flex',flexDirection:'column',gap:'1rem'}}>
+          {related.length>0&&(
+            <div style={{background:'white',border:'1px solid var(--border)',borderRadius:'10px',overflow:'hidden'}}>
+              <div style={{padding:'0.75rem 1rem',borderBottom:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <p style={{fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.09em',textTransform:'uppercase',color:'var(--muted)'}}>İlgili Konular</p>
+                <span style={{fontSize:'0.68rem',color:'var(--dim)'}}>{item.category}</span>
+              </div>
+              {related.map((r,i)=>{
+                const RI=ILLUS[r.id];
+                return(
+                  <button key={r.id} onClick={()=>onNav('content',r.id)}
+                    style={{width:'100%',display:'flex',alignItems:'center',gap:'0.75rem',padding:'0.7rem 1rem',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',textAlign:'left',borderBottom:i<related.length-1?'1px solid var(--border2)':'none',transition:'background .12s'}}
+                    onMouseEnter={e=>e.currentTarget.style.background='var(--bg)'}
+                    onMouseLeave={e=>e.currentTarget.style.background='none'}
+                  >
+                    <div style={{width:'44px',height:'32px',borderRadius:'4px',overflow:'hidden',flexShrink:0,background:'#0a0a12'}}>{RI&&<RI/>}</div>
+                    <div style={{flex:1}}>
+                      <p style={{fontSize:'0.8rem',fontWeight:500,color:'var(--ink)',lineHeight:1.3}}>{r.title}</p>
+                      <span style={{fontSize:'0.68rem',color:'var(--dim)'}}>{r.readMin} dk · {r.category}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <div style={{background:'var(--ink2)',borderRadius:'10px',padding:'1.1rem'}}>
+            <p style={{fontSize:'0.62rem',fontWeight:700,letterSpacing:'0.1em',textTransform:'uppercase',color:'var(--teal)',marginBottom:'0.5rem'}}>Bülten</p>
+            <p className="fr" style={{fontSize:'0.9rem',fontWeight:300,color:'white',lineHeight:1.35,marginBottom:'0.75rem'}}>Yeni konulardan haberdar ol</p>
+            <MiniSub/>
+          </div>
+        </div>
+      </div>
+      <NewsletterBand/>
+      <Footer onNav={onNav}/>
+    </div>
+  );
+}
+
+function SubscribePage({onNav}){
+  const [email,setEmail]=useState('');
+  const [done,setDone]=useState(false);
+  return(
+    <div style={{paddingTop:'52px',minHeight:'100vh',background:'var(--bg)',display:'flex',flexDirection:'column'}}>
+      <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:'4rem 2rem'}}>
+        <div style={{maxWidth:'420px',width:'100%',textAlign:'center'}}>
+          {!done?(
+            <>
+              <div style={{width:'44px',height:'44px',borderRadius:'10px',background:'var(--teal)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 1.5rem'}}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="white" strokeWidth="1.5"/><path d="M22 6l-10 7L2 6" stroke="white" strokeWidth="1.5"/></svg>
+              </div>
+              <h1 className="fr" style={{fontSize:'1.85rem',fontWeight:300,letterSpacing:'-0.04em',color:'var(--ink)',marginBottom:'0.75rem'}}>Yeni konulardan haberdar ol</h1>
+              <p style={{color:'var(--muted)',marginBottom:'1.75rem',fontSize:'0.875rem',lineHeight:1.65}}>Haftada bir, sade. Fazlası yok.</p>
+              <div style={{display:'flex',gap:'0.5rem'}}>
+                <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="e-posta adresin"
+                  style={{flex:1,padding:'0.65rem 0.9rem',border:'1.5px solid var(--border)',borderRadius:'8px',fontSize:'0.875rem',fontFamily:'inherit',color:'var(--ink)',background:'white',transition:'border-color .15s'}}
+                  onFocus={e=>e.target.style.borderColor='var(--teal)'}
+                  onBlur={e=>e.target.style.borderColor='var(--border)'}
+                  onKeyDown={e=>e.key==='Enter'&&email.includes('@')&&setDone(true)}
+                />
+                <button onClick={()=>{if(email.includes('@'))setDone(true);}} style={{background:'var(--teal)',color:'white',border:'none',padding:'0.65rem 1.15rem',borderRadius:'8px',fontSize:'0.83rem',fontWeight:700,cursor:'pointer',fontFamily:'inherit',whiteSpace:'nowrap',transition:'background .15s'}}
+                  onMouseEnter={e=>e.currentTarget.style.background='var(--teal-d)'}
+                  onMouseLeave={e=>e.currentTarget.style.background='var(--teal)'}
+                >Abone Ol</button>
+              </div>
+            </>
+          ):(
+            <div className="fu">
+              <div style={{width:'44px',height:'44px',borderRadius:'50%',background:'var(--teal-l)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 1.25rem'}}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="var(--teal)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </div>
+              <h2 className="fr" style={{fontSize:'1.6rem',fontWeight:300,letterSpacing:'-0.04em',color:'var(--ink)',marginBottom:'0.5rem'}}>Teşekkürler!</h2>
+              <p style={{color:'var(--muted)',marginBottom:'1.5rem',fontSize:'0.875rem'}}>{email}</p>
+              <button onClick={()=>onNav('home')} style={{background:'none',border:'1.5px solid var(--border)',padding:'0.55rem 1.35rem',borderRadius:'7px',cursor:'pointer',fontFamily:'inherit',fontSize:'0.875rem',fontWeight:500,color:'var(--ink)',transition:'border-color .15s'}}
+                onMouseEnter={e=>e.currentTarget.style.borderColor='var(--teal)'}
+                onMouseLeave={e=>e.currentTarget.style.borderColor='var(--border)'}
+              >Ana sayfaya dön</button>
+            </div>
+          )}
+        </div>
+      </div>
+      <Footer onNav={onNav}/>
+    </div>
+  );
+}
+
+function App(){
+  const [page,setPage]=useState('home');
+  const [contentId,setContentId]=useState(null);
+  const [homeCat,setHomeCat]=useState('Tümü');
+  const [searchOpen,setSearchOpen]=useState(false);
+  const onNav=useCallback((target,id,q,cat)=>{
+    setPage(target);setContentId(id||null);
+    if(cat!==undefined)setHomeCat(cat);
+    setSearchOpen(false);window.scrollTo(0,0);
+  },[]);
+  useEffect(()=>{
+    const fn=e=>{if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();setSearchOpen(v=>!v);}if(e.key==='Escape')setSearchOpen(false);};
+    window.addEventListener('keydown',fn);return()=>window.removeEventListener('keydown',fn);
+  },[]);
+  return(
+    <>
+      <Nav onNav={onNav} onSearch={()=>setSearchOpen(true)}/>
+      {searchOpen&&<SearchOverlay onClose={()=>setSearchOpen(false)} onNav={onNav}/>}
+      {page==='home'&&<HomePage initCat={homeCat} onNav={onNav}/>}
+      {page==='content'&&contentId&&<ContentPage itemId={contentId} onNav={onNav}/>}
+      {page==='subscribe'&&<SubscribePage onNav={onNav}/>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
