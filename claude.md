@@ -1,259 +1,148 @@
-\# ANLA.TR — Claude Code Handoff
+# ANLA.TR — Claude Code Project Notes
 
+## What this project is
 
+**ANLA.TR** is a Turkish knowledge platform — "anla.tr anlatır" (it explains). A fast, visually strong content site that explains complex topics (networking, economics, security, tech) in short, clear Turkish articles.
 
-\## What this project is
+Two real-world goals:
+1. **Domain registration proof** — submitted to TRABIS (.tr registry) to prove the domain will be used for a real site
+2. **Actual platform** — if the domain is granted, this becomes a real published site
 
+The final approved design reference is in `project/anlatr.html`.
 
+---
 
-\*\*ANLA.TR\*\* is a Turkish knowledge platform — "anla.tr anlatır" (it explains). The goal is a fast, visually strong content site that explains complex topics (networking, economics, security, tech) in short, clear Turkish articles.
+## Current status
 
+**Live at:** https://yigitu.github.io/anlatr/
 
+The Vite + React project is fully built and deployed. All major features are implemented:
+- Full URL-based routing via react-router-dom v6
+- 8 expanded Turkish articles (400-600 words each)
+- GitHub Pages SPA redirect (404.html trick)
+- Search overlay (Ctrl+K / Cmd+K)
+- Category filter via `?cat=` query param
+- Browser back/forward button works correctly
 
-There are two real-world goals for the site:
+---
 
-1\. \*\*Domain registration proof\*\* — submitted to TRABIS (.tr registry) to prove the domain will be used for a real site
+## Tech stack
 
-2\. \*\*Actual platform\*\* — if the domain is granted, this becomes a real published site
+- **Vite** — build tool, fast dev server
+- **React 18** with **react-router-dom v6**
+- **Plain CSS** — CSS variables only, no Tailwind
+- **No TypeScript**
+- **Google Fonts** — Fraunces (serif, headings) + Plus Jakarta Sans (UI/body)
 
+---
 
+## Routing
 
-The design was iterated extensively. The final approved design is in `project/anlatr.html`. \*\*Read that file first\*\* — it is the single source of truth for every visual and functional detail.
+```
+/anlatr/                    → HomePage
+/anlatr/:articleId          → ContentPage (e.g. /anlatr/vlan-nedir)
+/anlatr/subscribe           → SubscribePage
+```
 
+- `BrowserRouter` with `basename="/anlatr"` in `src/main.jsx`
+- Category filter: `?cat=Ağ` query param via `useSearchParams` in `HomePage`
+- `ScrollToTop` component in `App.jsx` resets scroll on route change
+- GitHub Pages SPA redirect: `public/404.html` redirects to `/?/path` and `index.html` decodes it
 
+---
 
-\---
+## File structure
 
-
-
-\## Your first task on this session
-
-
-
-The user wants to build this as a proper Vite + React project (they have Node.js on this machine). Your job is to implement the design from `project/anlatr.html` as a clean, modular codebase.
-
-
-
-\*\*Do not start implementing until you have read `project/anlatr.html` in full.\*\*
-
-
-
-\---
-
-
-
-\## Tech stack
-
-
-
-\- \*\*Vite\*\* — build tool, fast dev server, easy GitHub Pages deploy
-
-\- \*\*React 18\*\* — already used in the prototype
-
-\- \*\*Plain CSS\*\* — no Tailwind, no CSS-in-JS, just CSS variables (already defined in the prototype)
-
-\- \*\*No TypeScript\*\* — keep it simple
-
-\- \*\*Google Fonts\*\* — Fraunces + Plus Jakarta Sans (already in the prototype)
-
-
-
-\### Setup command
-
-```bash
-
-npm create vite@latest anlatr -- --template react
-
-cd anlatr
-
-npm install
-
-npm run dev
-
-
-
-Planned file structure
-
+```
 anlatr/
-
-├── index.html
-
+├── index.html              (includes SPA redirect decoder script)
 ├── package.json
-
-├── vite.config.js
-
+├── vite.config.js          (base: '/anlatr/')
 ├── public/
-
-│   └── favicon.svg
-
+│   ├── favicon.svg
+│   └── 404.html            (GitHub Pages SPA redirect)
 └── src/
+    ├── main.jsx            (BrowserRouter wrapper)
+    ├── App.jsx             (Routes, ScrollToTop, search overlay state)
+    ├── index.css           (CSS variables, global styles, .ab-h2/.ab-h3)
+    ├── utils.jsx           (formatBody: parses ## h2, ### h3, - lists, **bold**, `code`)
+    ├── data/
+    │   └── content.js      (8 articles as JS objects with template literal bodies)
+    ├── components/
+    │   ├── illustrations/index.jsx
+    │   ├── Nav.jsx         (dark→light on scroll, useNavigate for category links)
+    │   ├── SearchOverlay.jsx (useNavigate, no onNav prop)
+    │   ├── HeaderBand.jsx
+    │   ├── CatStrip.jsx
+    │   ├── BentoGrid.jsx
+    │   ├── NewsletterBand.jsx
+    │   ├── Footer.jsx
+    │   └── Badge.jsx
+    └── pages/
+        ├── HomePage.jsx    (useSearchParams for ?cat= filter)
+        ├── ContentPage.jsx (useParams for :articleId)
+        └── SubscribePage.jsx
+```
 
-&#x20;   ├── main.jsx
+---
 
-&#x20;   ├── App.jsx
+## Design tokens
 
-&#x20;   ├── index.css
-
-&#x20;   ├── data/
-
-&#x20;   │   └── content.js
-
-&#x20;   ├── components/
-
-&#x20;   │   ├── illustrations/
-
-&#x20;   │   │   └── index.jsx
-
-&#x20;   │   ├── Nav.jsx
-
-&#x20;   │   ├── SearchOverlay.jsx
-
-&#x20;   │   ├── HeaderBand.jsx
-
-&#x20;   │   ├── CatStrip.jsx
-
-&#x20;   │   ├── BentoGrid.jsx
-
-&#x20;   │   ├── NewsletterBand.jsx
-
-&#x20;   │   ├── Footer.jsx
-
-&#x20;   │   └── Badge.jsx
-
-&#x20;   └── pages/
-
-&#x20;       ├── HomePage.jsx
-
-&#x20;       ├── ContentPage.jsx
-
-&#x20;       └── SubscribePage.jsx
-
-
-
-
-
-Design tokens
-
-\--bg: #f4f2ed;
-
-\--white: #ffffff;
-
-\--ink: #0f0e17;
-
-\--ink2: #1c1b2b;
-
-\--muted: #7a7888;
-
-\--dim: #b0aebb;
-
-\--border: #e3e0d8;
-
-\--border2: #ece9e2;
-
-\--teal: #0d9488;
-
-\--teal-l: #f0fdfb;
-
-\--teal-d: #0a7a70;
-
-\--amber: #d97706;
-
-\--amber-l: #fef3c7;
-
-\--blue: #2563eb;
-
-\--blue-l: #eff6ff;
-
-\--rose: #e11d48;
-
-\--rose-l: #fff1f3;
-
-\--purple: #7c3aed;
-
-\--purple-l: #f5f3ff;
-
-Fonts: Fraunces (serif, headings/brand) + Plus Jakarta Sans (UI/body)
-
-
-
-
-
-Key design decisions
-
-Nav starts dark, transitions to light on scroll
-
-"anla.tr anlatır." slogan — appears once in HeaderBand only
-
-Header band is compact, not a full-screen hero
-
-Bento grid — 12 columns, first card spans 7 (tall), second 5, rest 4
-
-Each card has a dark-background SVG illustration thumbnail
+```
+--bg: #f4f2ed       --teal: #0d9488     --amber: #d97706
+--ink: #0f0e17      --teal-l: #f0fdfb   --amber-l: #fef3c7
+--muted: #7a7888    --teal-d: #0a7a70   --blue: #2563eb
+--border: #e3e0d8                        --rose: #e11d48
+                                         --purple: #7c3aed
+```
 
 Category colors: Ağ=blue, Ekonomi=amber, Güvenlik=rose, Teknoloji=purple, Yazılım=teal
 
-Search overlay opens on "Ara" button click or ⌘K/Ctrl+K
+---
 
-Newsletter in footer band AND as mini widget in article sidebar
+## Key implementation details
 
-High information density — no wasted space, no repeated text
+**Article bodies** are JS template literals in `src/data/content.js`. Inline code in article text must use escaped backticks (`\`code\``) to avoid terminating the template literal prematurely.
 
+**`formatBody` utility** in `src/utils.jsx` parses article bodies:
+- `## heading` → `<h2 className="fr ab-h2">`
+- `### heading` → `<h3 className="ab-h3">`
+- `- item` lines → `<ul><li>`
+- `**bold**` → `<strong>`
+- `` `code` `` → `<code>` (styled with teal color)
 
-The 8 articles
+**Navigation pattern:** All components use `useNavigate()` directly. The old `onNav` prop pattern has been eliminated.
 
-ID	Title	Category
+---
 
-vlan-nedir	VLAN nedir?	Ağ
+## The 8 articles
 
-wireguard-nasil-calisir	WireGuard nasıl çalışır?	Ağ
+| ID | Title | Category |
+|---|---|---|
+| vlan-nedir | VLAN nedir? | Ağ |
+| wireguard-nasil-calisir | WireGuard nasıl çalışır? | Ağ |
+| faiz-nedir | Faiz nedir? | Ekonomi |
+| dns-nedir | DNS nedir? | Ağ |
+| vpn-nedir | VPN nedir? | Güvenlik |
+| ssh-nedir | SSH nedir? | Ağ |
+| blockchain-nedir | Blockchain nedir? | Teknoloji |
+| tcp-ip-nedir | TCP/IP nedir? | Ağ |
 
-faiz-nedir	Faiz nedir?	Ekonomi
+---
 
-dns-nedir	DNS nedir?	Ağ
+## Deployment
 
-vpn-nedir	VPN nedir?	Güvenlik
+```bash
+npm run deploy    # vite build && gh-pages -d dist
+git push origin main
+```
 
-ssh-nedir	SSH nedir?	Ağ
+GitHub Pages serves from the `gh-pages` branch. Direct URL navigation and page refresh work via the 404.html SPA redirect trick.
 
-blockchain-nedir	Blockchain nedir?	Teknoloji
+---
 
-tcp-ip-nedir	TCP/IP nedir?	Ağ
+## Future work (planned)
 
-All SVG illustration code is in project/anlatr.html — copy into src/components/illustrations/index.jsx.
-
-
-
-GitHub Pages deployment
-
-npm install --save-dev gh-pages
-
-vite.config.js:
-
-
-
-export default { base: '/anlatr/' }
-
-package.json scripts:
-
-
-
-"deploy": "vite build \&\& gh-pages -d dist"
-
-What to do in this session
-
-Read project/anlatr.html completely
-
-Scaffold with npm create vite@latest
-
-Implement each module in the file structure above
-
-Run npm run dev to verify
-
-Create GitHub repo and push
-
-Configure GitHub Pages
-
-Do NOT start writing code until you have read the design file in full.
-
-
-
+- Replace JS template literal article storage with a proper CMS or markdown file system
+- Add more articles
+- Wire up newsletter subscription to a real backend (currently UI-only)
