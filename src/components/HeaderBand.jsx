@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import { FEATURED } from '../data/content.js';
 import { ILLUS } from './illustrations/index.jsx';
 
-export default function HeaderBand({ onNav }) {
+export default function HeaderBand() {
+  const navigate = useNavigate();
   const Illu = ILLUS[FEATURED.id];
   return (
     <div style={{ paddingTop: '52px', background: 'var(--ink2)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
@@ -24,7 +26,7 @@ export default function HeaderBand({ onNav }) {
         </div>
 
         <button
-          onClick={() => onNav('content', FEATURED.id)}
+          onClick={() => navigate(`/${FEATURED.id}`)}
           style={{
             display: 'flex', alignItems: 'center', gap: '0.85rem',
             padding: '0.75rem 1rem',

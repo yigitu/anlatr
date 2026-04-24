@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CONTENT } from '../data/content.js';
 import { ILLUS } from './illustrations/index.jsx';
 import Badge from './Badge.jsx';
 import { hl } from '../utils.jsx';
 
-export default function SearchOverlay({ onClose, onNav }) {
+export default function SearchOverlay({ onClose }) {
+  const navigate = useNavigate();
   const [q, setQ] = useState('');
   const ref = useRef(null);
 
@@ -15,6 +17,8 @@ export default function SearchOverlay({ onClose, onNav }) {
     ), [q]);
 
   useEffect(() => { setTimeout(() => ref.current?.focus(), 50); }, []);
+
+  const go = (id) => { navigate(`/${id}`); onClose(); };
 
   return (
     <div className="fi"
@@ -53,8 +57,7 @@ export default function SearchOverlay({ onClose, onNav }) {
         {results.map(item => {
           const Illu = ILLUS[item.id];
           return (
-            <button key={item.id}
-              onClick={() => { onNav('content', item.id); onClose(); }}
+            <button key={item.id} onClick={() => go(item.id)}
               style={{
                 width: '100%', display: 'flex', alignItems: 'center', gap: '0.85rem',
                 padding: '0.7rem 0.85rem', borderRadius: '8px',

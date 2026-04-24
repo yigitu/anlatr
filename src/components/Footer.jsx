@@ -1,4 +1,7 @@
-export default function Footer({ onNav }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function Footer() {
+  const navigate = useNavigate();
   return (
     <footer style={{ background: 'var(--ink)', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '2.5rem 2rem 2rem' }}>
       <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
@@ -12,17 +15,19 @@ export default function Footer({ onNav }) {
             </p>
           </div>
           {[
-            { t: 'YAYIN',   l: ['Bu Hafta', 'Arşiv', 'Kategoriler', 'Bülten'] },
-            { t: 'YASAL',   l: ['Gizlilik Politikası', 'Kullanım Şartları'] },
-            { t: 'BAĞLANTI',l: ['İletişim', 'Twitter/X', 'RSS'] },
+            { t: 'YAYIN',    l: [['Bu Hafta', '/'], ['Kategoriler', '/']] },
+            { t: 'YASAL',    l: [['Gizlilik Politikası', null], ['Kullanım Şartları', null]] },
+            { t: 'BAĞLANTI', l: [['İletişim', null], ['Twitter/X', null], ['RSS', null]] },
           ].map(col => (
             <div key={col.t}>
               <p style={{ fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.11em', color: 'rgba(255,255,255,0.2)', marginBottom: '0.75rem' }}>{col.t}</p>
-              {col.l.map(l => (
-                <button key={l} style={{ display: 'block', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.78rem', color: 'rgba(255,255,255,0.38)', padding: '0.2rem 0', transition: 'color .12s' }}
+              {col.l.map(([label, path]) => (
+                <button key={label}
+                  onClick={path ? () => navigate(path) : undefined}
+                  style={{ display: 'block', background: 'none', border: 'none', cursor: path ? 'pointer' : 'default', fontFamily: 'inherit', fontSize: '0.78rem', color: 'rgba(255,255,255,0.38)', padding: '0.2rem 0', transition: 'color .12s' }}
                   onMouseEnter={e => e.currentTarget.style.color = 'white'}
                   onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
-                >{l}</button>
+                >{label}</button>
               ))}
             </div>
           ))}

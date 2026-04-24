@@ -70,3 +70,17 @@ input, button { outline: none; font-family: inherit; }
   color: var(--teal);
 }
 .ab strong { font-weight: 600; }
+.ab-h2 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 2.25rem 0 0.65rem;
+  line-height: 1.25;
+}
+.ab-h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 1.75rem 0 0.5rem;
+}

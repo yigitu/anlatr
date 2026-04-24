@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { CONTENT, CAT } from '../data/content.js';
 import { ILLUS } from '../components/illustrations/index.jsx';
 import Badge from '../components/Badge.jsx';
@@ -7,14 +7,27 @@ import Footer from '../components/Footer.jsx';
 import { formatBody } from '../utils.jsx';
 import MiniSub from '../components/MiniSub.jsx';
 
-export default function ContentPage({ itemId, onNav }) {
-  const item = CONTENT.find(c => c.id === itemId);
-  useEffect(() => { window.scrollTo(0, 0); }, [itemId]);
-  if (!item) return null;
+export default function ContentPage() {
+  const { articleId } = useParams();
+  const navigate = useNavigate();
+  const item = CONTENT.find(c => c.id === articleId);
+
+  if (!item) {
+    return (
+      <div style={{ paddingTop: '52px', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ color: 'var(--muted)', marginBottom: '1rem' }}>Sayfa bulunamadı.</p>
+          <button onClick={() => navigate('/')} style={{ background: 'var(--teal)', color: 'white', border: 'none', padding: '0.5rem 1.25rem', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}>
+            Ana sayfaya dön
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const m = CAT[item.category] || { c: 'var(--teal)', bg: 'var(--teal-l)' };
   const Illu = ILLUS[item.id];
-  const related = CONTENT.filter(c => c.id !== itemId && c.category === item.category).slice(0, 4);
+  const related = CONTENT.filter(c => c.id !== item.id && c.category === item.category).slice(0, 4);
 
   return (
     <div style={{ paddingTop: '52px', minHeight: '100vh', background: 'var(--bg)' }}>
@@ -23,7 +36,7 @@ export default function ContentPage({ itemId, onNav }) {
         <div style={{ maxWidth: '1240px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 320px', gap: '3rem', alignItems: 'center' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-              <button onClick={() => onNav('home')} style={{
+              <button onClick={() => navigate('/')} style={{
                 background: 'none', border: 'none', cursor: 'pointer',
                 display: 'inline-flex', alignItems: 'center', gap: '4px',
                 fontSize: '0.78rem', fontWeight: 500, color: 'var(--muted)',
@@ -63,7 +76,7 @@ export default function ContentPage({ itemId, onNav }) {
         </div>
       </div>
 
-      {/* Article body + sidebar */}
+      {/* Body + sidebar */}
       <div style={{ maxWidth: '1240px', margin: '0 auto', padding: '2.5rem 2rem 4rem', display: 'grid', gridTemplateColumns: '1fr 280px', gap: '3rem', alignItems: 'start' }}>
         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid var(--border)', padding: '2rem 2.25rem' }}>
           <div className="ab" style={{ fontSize: '0.95rem', lineHeight: 1.85, color: 'var(--ink)' }}>
@@ -77,7 +90,6 @@ export default function ContentPage({ itemId, onNav }) {
           </div>
         </div>
 
-        {/* Sidebar */}
         <div style={{ position: 'sticky', top: '72px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {related.length > 0 && (
             <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '10px', overflow: 'hidden' }}>
@@ -88,7 +100,7 @@ export default function ContentPage({ itemId, onNav }) {
               {related.map((r, i) => {
                 const RI = ILLUS[r.id];
                 return (
-                  <button key={r.id} onClick={() => onNav('content', r.id)}
+                  <button key={r.id} onClick={() => navigate(`/${r.id}`)}
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem',
                       padding: '0.7rem 1rem', background: 'none', border: 'none', cursor: 'pointer',
@@ -123,7 +135,7 @@ export default function ContentPage({ itemId, onNav }) {
       </div>
 
       <NewsletterBand />
-      <Footer onNav={onNav} />
+      <Footer />
     </div>
   );
 }

@@ -1,16 +1,18 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CAT } from '../data/content.js';
 import { ILLUS } from './illustrations/index.jsx';
 import Badge from './Badge.jsx';
 
-function BentoCard({ item, span, tall, idx, onClick }) {
+function BentoCard({ item, span, tall, idx }) {
+  const navigate = useNavigate();
   const [hov, setHov] = useState(false);
   const m = CAT[item.category] || { c: 'var(--teal)', bg: 'var(--teal-l)' };
   const Illu = ILLUS[item.id];
 
   return (
     <div
-      onClick={onClick}
+      onClick={() => navigate(`/${item.id}`)}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       className="fu"
@@ -59,7 +61,7 @@ function BentoCard({ item, span, tall, idx, onClick }) {
   );
 }
 
-export default function BentoGrid({ items, onNav }) {
+export default function BentoGrid({ items }) {
   if (items.length === 0) {
     return <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--muted)' }}>Bu kategoride içerik bulunamadı.</div>;
   }
@@ -72,7 +74,6 @@ export default function BentoGrid({ items, onNav }) {
           span={i === 0 ? 7 : i === 1 ? 5 : 4}
           tall={i === 0}
           idx={i}
-          onClick={() => onNav('content', item.id)}
         />
       ))}
     </div>

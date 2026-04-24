@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer.jsx';
 
-export default function SubscribePage({ onNav }) {
+export default function SubscribePage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [done, setDone] = useState(false);
 
@@ -59,7 +61,7 @@ export default function SubscribePage({ onNav }) {
               </div>
               <h2 className="fr" style={{ fontSize: '1.6rem', fontWeight: 300, letterSpacing: '-0.04em', color: 'var(--ink)', marginBottom: '0.5rem' }}>Teşekkürler!</h2>
               <p style={{ color: 'var(--muted)', marginBottom: '1.5rem', fontSize: '0.875rem' }}>{email}</p>
-              <button onClick={() => onNav('home')}
+              <button onClick={() => navigate('/')}
                 style={{
                   background: 'none', border: '1.5px solid var(--border)',
                   padding: '0.55rem 1.35rem', borderRadius: '7px',
@@ -76,7 +78,7 @@ export default function SubscribePage({ onNav }) {
           )}
         </div>
       </div>
-      <Footer onNav={onNav} />
+      <Footer />
     </div>
   );
 }

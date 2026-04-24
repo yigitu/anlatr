@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CAT, CONTENT } from '../data/content.js';
 
-export default function Nav({ onNav, onSearch }) {
+export default function Nav({ onSearch }) {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
 
@@ -12,7 +14,7 @@ export default function Nav({ onNav, onSearch }) {
   }, []);
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200, transition: 'all .3s' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200 }}>
       <nav style={{
         height: '52px', display: 'flex', alignItems: 'center', padding: '0 1.75rem', gap: '1.5rem',
         background: scrolled ? 'rgba(244,242,237,0.96)' : 'rgba(15,14,23,1)',
@@ -20,16 +22,16 @@ export default function Nav({ onNav, onSearch }) {
         borderBottom: `1px solid ${scrolled ? 'var(--border)' : 'rgba(255,255,255,0.07)'}`,
         transition: 'background .4s, border-color .4s',
       }}>
-        <button onClick={() => onNav('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, flexShrink: 0 }}>
+        <button onClick={() => navigate('/')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, flexShrink: 0 }}>
           <span className="fr" style={{ fontSize: '1.1rem', fontWeight: 600, letterSpacing: '-0.04em', color: scrolled ? 'var(--ink)' : 'white' }}>
             ANLA<span style={{ color: 'var(--teal)' }}>.</span>TR
           </span>
         </button>
 
-        <div style={{ flex: 1, display: 'flex', gap: '0', alignItems: 'center' }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
           {['Bu Hafta', 'Hakkımızda'].map(l => (
             <button key={l}
-              onClick={l === 'Bu Hafta' ? () => onNav('home') : undefined}
+              onClick={l === 'Bu Hafta' ? () => navigate('/') : undefined}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
                 fontSize: '0.82rem', fontWeight: 500,
@@ -67,7 +69,11 @@ export default function Nav({ onNav, onSearch }) {
               }}>
                 {Object.entries(CAT).map(([cat, m]) => (
                   <button key={cat}
-                    onClick={() => { onNav('home', null, '', cat); setCatOpen(false); }}
+                    onClick={() => {
+                      const p = new URLSearchParams({ cat });
+                      navigate(`/?${p}`);
+                      setCatOpen(false);
+                    }}
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
                       padding: '0.55rem 1rem', background: 'none', border: 'none', cursor: 'pointer',
@@ -108,7 +114,7 @@ export default function Nav({ onNav, onSearch }) {
             </svg>
             Ara
           </button>
-          <button onClick={() => onNav('subscribe')} style={{
+          <button onClick={() => navigate('/subscribe')} style={{
             background: 'var(--teal)', color: 'white', border: 'none',
             padding: '0.38rem 1rem', borderRadius: '7px',
             fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer',
