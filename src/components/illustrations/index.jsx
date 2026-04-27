@@ -49,22 +49,27 @@ export const IlluWireGuard = () => (
   </svg>
 );
 
-export const IlluFaiz = () => (
+export const IlluDocker = () => (
   <svg viewBox="0 0 320 180" style={{ width: '100%', height: '100%', display: 'block' }}>
-    <rect width="320" height="180" fill="#111008" />
-    {[1,2,3,4].map(i => <line key={i} x1="38" y1={148-i*30} x2="290" y2={148-i*30} stroke="rgba(217,119,6,0.06)" strokeWidth="1" />)}
-    {[{x:60,h:28},{x:100,h:48},{x:140,h:72},{x:180,h:96},{x:220,h:116},{x:260,h:132}].map(({x,h},i) => (
+    <rect width="320" height="180" fill="#041a14" />
+    {[0,80,160,240,320].map((x,i) => <line key={'v'+i} x1={x} y1="0" x2={x} y2="180" stroke="rgba(13,148,136,0.05)" strokeWidth="1" />)}
+    {[0,60,120,180].map((y,i) => <line key={'h'+i} x1="0" y1={y} x2="320" y2={y} stroke="rgba(13,148,136,0.05)" strokeWidth="1" />)}
+    {[{y:130,t:'OS Katmanı',o:0.22},{y:106,t:'Kütüphaneler',o:0.42},{y:82,t:'Uygulama Kodu',o:0.7}].map(({y,t,o},i) => (
       <g key={i}>
-        <rect x={x-14} y={148-h} width="28" height={h} rx="3" fill={`rgba(217,119,6,${0.18+i*0.09})`} stroke="rgba(217,119,6,0.35)" strokeWidth="1" />
-        <text x={x} y="162" textAnchor="middle" fill="rgba(217,119,6,0.4)" fontSize="6.5" fontFamily="monospace">{['Y1','Y2','Y3','Y4','Y5','Y6'][i]}</text>
+        <rect x="95" y={y} width="130" height="22" rx="3" fill={`rgba(13,148,136,${o*0.12})`} stroke={`rgba(13,148,136,${o})`} strokeWidth="1.5" />
+        <text x="160" y={y+14} textAnchor="middle" fill={`rgba(13,148,136,${o})`} fontSize="8" fontFamily="monospace">{t}</text>
       </g>
     ))}
-    <polyline points="60,120 100,100 140,76 180,52 220,32 260,16" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    {[60,100,140,180,220,260].map((x,i) => <circle key={i} cx={x} cy={[120,100,76,52,32,16][i]} r="3.5" fill="#d97706" />)}
-    <circle cx="42" cy="155" r="13" fill="#1a1100" stroke="#d97706" strokeWidth="1.5" />
-    <text x="42" y="160" textAnchor="middle" fill="#d97706" fontSize="13" fontFamily="serif">₺</text>
-    <text x="165" y="175" textAnchor="middle" fill="rgba(217,119,6,0.3)" fontSize="7" fontFamily="monospace">BİLEŞİK FAİZ BÜYÜME EĞRİSİ</text>
-    <line x1="38" y1="148" x2="290" y2="148" stroke="rgba(217,119,6,0.18)" strokeWidth="1" />
+    <text x="160" y="168" textAnchor="middle" fill="rgba(13,148,136,0.25)" fontSize="6.5" fontFamily="monospace" letterSpacing="1">İMAJ (image)</text>
+    <rect x="12" y="14" width="72" height="44" rx="5" fill="rgba(13,148,136,0.06)" stroke="rgba(13,148,136,0.45)" strokeWidth="1.5" />
+    <text x="48" y="33" textAnchor="middle" fill="rgba(13,148,136,0.6)" fontSize="7.5" fontFamily="monospace">geliştirme</text>
+    <text x="48" y="47" textAnchor="middle" fill="rgba(13,148,136,0.35)" fontSize="6.5" fontFamily="monospace">konteyner ✓</text>
+    <rect x="236" y="14" width="72" height="44" rx="5" fill="rgba(13,148,136,0.06)" stroke="rgba(13,148,136,0.45)" strokeWidth="1.5" />
+    <text x="272" y="33" textAnchor="middle" fill="rgba(13,148,136,0.6)" fontSize="7.5" fontFamily="monospace">prodüksiyon</text>
+    <text x="272" y="47" textAnchor="middle" fill="rgba(13,148,136,0.35)" fontSize="6.5" fontFamily="monospace">konteyner ✓</text>
+    <line x1="140" y1="82" x2="84" y2="58" stroke="rgba(13,148,136,0.2)" strokeWidth="1" strokeDasharray="3,2" />
+    <line x1="180" y1="82" x2="236" y2="58" stroke="rgba(13,148,136,0.2)" strokeWidth="1" strokeDasharray="3,2" />
+    <text x="160" y="72" textAnchor="middle" fill="rgba(13,148,136,0.22)" fontSize="7" fontFamily="monospace">aynı imajdan</text>
   </svg>
 );
 
@@ -188,13 +193,146 @@ export const IlluTCPIP = () => (
   </svg>
 );
 
+export const IlluAgenticAI = () => (
+  <svg viewBox="0 0 320 180" style={{ width: '100%', height: '100%', display: 'block' }}>
+    <rect width="320" height="180" fill="#180d00" />
+    {[0,64,128,192,256,320].map((x,i) => <line key={'v'+i} x1={x} y1="0" x2={x} y2="180" stroke="rgba(217,119,6,0.05)" strokeWidth="1" />)}
+    {[0,60,120,180].map((y,i) => <line key={'h'+i} x1="0" y1={y} x2="320" y2={y} stroke="rgba(217,119,6,0.05)" strokeWidth="1" />)}
+    {/* spokes from orchestrator to agents */}
+    {[[160,20],[225,67],[200,143],[120,143],[95,67]].map(([x,y],i) => (
+      <line key={'s'+i} x1="160" y1="90" x2={x} y2={y} stroke="rgba(217,119,6,0.32)" strokeWidth="1.3" strokeDasharray="4,3" />
+    ))}
+    {/* pentagon ring between agents */}
+    <polygon points="160,20 225,67 200,143 120,143 95,67" fill="none" stroke="rgba(217,119,6,0.1)" strokeWidth="1" />
+    {/* outer agent nodes */}
+    {[[160,20,'WEB'],[225,67,'KOD'],[200,143,'TEST'],[120,143,'YAZ'],[95,67,'İZLE']].map(([x,y,lbl],i) => (
+      <g key={'a'+i}>
+        <circle cx={x} cy={y} r="14" fill="#1e1000" stroke="rgba(217,119,6,0.55)" strokeWidth="1.5" />
+        <text x={x} y={y+4} textAnchor="middle" fill="rgba(217,119,6,0.75)" fontSize="6" fontFamily="monospace">{lbl}</text>
+      </g>
+    ))}
+    {/* center orchestrator */}
+    <circle cx="160" cy="90" r="22" fill="#241400" stroke="var(--amber)" strokeWidth="2" />
+    <text x="160" y="87" textAnchor="middle" fill="var(--amber)" fontSize="7" fontFamily="monospace" fontWeight="bold">AJAN</text>
+    <text x="160" y="98" textAnchor="middle" fill="rgba(217,119,6,0.5)" fontSize="5.5" fontFamily="monospace">YÖNETİCİ</text>
+    <text x="160" y="172" textAnchor="middle" fill="rgba(217,119,6,0.22)" fontSize="6.5" fontFamily="monospace">multi-agent · ReAct döngüsü</text>
+  </svg>
+);
+
+export const IlluLocalLLM = () => (
+  <svg viewBox="0 0 320 180" style={{ width: '100%', height: '100%', display: 'block' }}>
+    <rect width="320" height="180" fill="#180d00" />
+    {/* laptop lid */}
+    <rect x="80" y="18" width="160" height="106" rx="6" fill="#100800" stroke="rgba(217,119,6,0.4)" strokeWidth="1.5" />
+    {/* screen glass */}
+    <rect x="90" y="26" width="140" height="90" rx="3" fill="#0a0500" />
+    {/* keyboard base */}
+    <rect x="65" y="124" width="190" height="9" rx="3" fill="#100800" stroke="rgba(217,119,6,0.3)" strokeWidth="1.2" />
+    <rect x="125" y="124" width="70" height="4" rx="1" fill="rgba(217,119,6,0.08)" />
+    {/* neural net: input→hidden connections */}
+    {[44,62,80,98].flatMap(iy => [44,62,80,98].map(hy => (
+      <line key={`ih-${iy}-${hy}`} x1="120" y1={iy} x2="160" y2={hy} stroke="rgba(217,119,6,0.1)" strokeWidth="0.7" />
+    )))}
+    {/* hidden→output connections */}
+    {[44,62,80,98].flatMap(hy => [62,80].map(oy => (
+      <line key={`ho-${hy}-${oy}`} x1="160" y1={hy} x2="200" y2={oy} stroke="rgba(217,119,6,0.15)" strokeWidth="0.8" />
+    )))}
+    {/* input layer */}
+    {[44,62,80,98].map(y => (
+      <circle key={'i'+y} cx="120" cy={y} r="5" fill="#1e1000" stroke="rgba(217,119,6,0.45)" strokeWidth="1.2" />
+    ))}
+    {/* hidden layer */}
+    {[44,62,80,98].map(y => (
+      <circle key={'h'+y} cx="160" cy={y} r="5" fill="#201200" stroke="rgba(217,119,6,0.65)" strokeWidth="1.2" />
+    ))}
+    {/* output layer */}
+    {[62,80].map(y => (
+      <circle key={'o'+y} cx="200" cy={y} r="6.5" fill="#261600" stroke="var(--amber)" strokeWidth="1.5" />
+    ))}
+    <text x="160" y="109" textAnchor="middle" fill="rgba(217,119,6,0.28)" fontSize="5.5" fontFamily="monospace">GGUF · 4-bit · llama.cpp</text>
+    <text x="160" y="172" textAnchor="middle" fill="rgba(217,119,6,0.22)" fontSize="6.5" fontFamily="monospace">yerel model · sıfır bulut</text>
+  </svg>
+);
+
+export const IlluMCP = () => (
+  <svg viewBox="0 0 320 180" style={{ width: '100%', height: '100%', display: 'block' }}>
+    <rect width="320" height="180" fill="#180d00" />
+    {[0,64,128,192,256,320].map((x,i) => <line key={'v'+i} x1={x} y1="0" x2={x} y2="180" stroke="rgba(217,119,6,0.05)" strokeWidth="1" />)}
+    {[0,60,120,180].map((y,i) => <line key={'h'+i} x1="0" y1={y} x2="320" y2={y} stroke="rgba(217,119,6,0.05)" strokeWidth="1" />)}
+    {/* spokes from hub to tools */}
+    {[[160,18],[228,56],[205,148],[115,148],[92,56]].map(([x,y],i) => (
+      <line key={'sp'+i} x1="160" y1="90" x2={x} y2={y} stroke="rgba(217,119,6,0.38)" strokeWidth="1.5" />
+    ))}
+    {/* FILE tool */}
+    <rect x="146" y="7" width="28" height="22" rx="3" fill="#1e1000" stroke="rgba(217,119,6,0.55)" strokeWidth="1.3" />
+    <path d="M165,7 v8 h8" fill="none" stroke="rgba(217,119,6,0.4)" strokeWidth="1" />
+    <text x="160" y="22" textAnchor="middle" fill="rgba(217,119,6,0.65)" fontSize="6" fontFamily="monospace">FILE</text>
+    {/* CALENDAR tool */}
+    <rect x="214" y="45" width="28" height="22" rx="3" fill="#1e1000" stroke="rgba(217,119,6,0.55)" strokeWidth="1.3" />
+    <text x="228" y="60" textAnchor="middle" fill="rgba(217,119,6,0.65)" fontSize="6" fontFamily="monospace">CAL</text>
+    {/* CODE tool */}
+    <rect x="191" y="137" width="28" height="22" rx="3" fill="#1e1000" stroke="rgba(217,119,6,0.55)" strokeWidth="1.3" />
+    <text x="205" y="152" textAnchor="middle" fill="rgba(217,119,6,0.65)" fontSize="8" fontFamily="monospace">{ }</text>
+    {/* DB tool */}
+    <rect x="101" y="137" width="28" height="22" rx="3" fill="#1e1000" stroke="rgba(217,119,6,0.55)" strokeWidth="1.3" />
+    {[0,1,2].map(i => <line key={'db'+i} x1="107" y1={144+i*4} x2="123" y2={144+i*4} stroke="rgba(217,119,6,0.5)" strokeWidth="1" />)}
+    {/* GIT tool */}
+    <rect x="78" y="45" width="28" height="22" rx="3" fill="#1e1000" stroke="rgba(217,119,6,0.55)" strokeWidth="1.3" />
+    <text x="92" y="60" textAnchor="middle" fill="rgba(217,119,6,0.65)" fontSize="6" fontFamily="monospace">GIT</text>
+    {/* center MCP hub */}
+    <circle cx="160" cy="90" r="24" fill="#241400" stroke="var(--amber)" strokeWidth="2" />
+    <text x="160" y="87" textAnchor="middle" fill="var(--amber)" fontSize="8" fontFamily="monospace" fontWeight="bold">MCP</text>
+    <text x="160" y="99" textAnchor="middle" fill="rgba(217,119,6,0.5)" fontSize="5.5" fontFamily="monospace">protokol</text>
+    <text x="160" y="172" textAnchor="middle" fill="rgba(217,119,6,0.22)" fontSize="6.5" fontFamily="monospace">standart araç bağlantısı</text>
+  </svg>
+);
+
+export const IlluAkilliEv = () => (
+  <svg viewBox="0 0 320 180" style={{ width: '100%', height: '100%', display: 'block' }}>
+    <rect width="320" height="180" fill="#0e0a1e" />
+    {[0,64,128,192,256,320].map((x,i) => <line key={'v'+i} x1={x} y1="0" x2={x} y2="180" stroke="rgba(124,58,237,0.05)" strokeWidth="1" />)}
+    {[0,60,120,180].map((y,i) => <line key={'h'+i} x1="0" y1={y} x2="320" y2={y} stroke="rgba(124,58,237,0.05)" strokeWidth="1" />)}
+    {/* wifi arcs from roof peak (160,62) — counter-clockwise = opens upward */}
+    <path d="M148,62 A12,12 0 0,0 172,62" fill="none" stroke="rgba(124,58,237,0.75)" strokeWidth="1.8" strokeLinecap="round" />
+    <path d="M136,62 A24,24 0 0,0 184,62" fill="none" stroke="rgba(124,58,237,0.45)" strokeWidth="1.6" strokeLinecap="round" />
+    <path d="M124,62 A36,36 0 0,0 196,62" fill="none" stroke="rgba(124,58,237,0.22)" strokeWidth="1.4" strokeLinecap="round" />
+    {/* device mesh connection lines */}
+    {[[45,75],[275,80],[38,140],[282,140]].map(([x,y],i) => (
+      <line key={'dl'+i} x1={x} y1={y} x2="160" y2="90" stroke="rgba(124,58,237,0.15)" strokeWidth="1" strokeDasharray="3,3" />
+    ))}
+    {/* house body */}
+    <rect x="110" y="105" width="100" height="62" rx="2" fill="#130e28" stroke="rgba(124,58,237,0.6)" strokeWidth="1.5" />
+    {/* roof */}
+    <polygon points="95,107 160,62 225,107" fill="#100c24" stroke="rgba(124,58,237,0.7)" strokeWidth="1.5" />
+    {/* door */}
+    <rect x="148" y="136" width="24" height="31" rx="2" fill="rgba(124,58,237,0.1)" stroke="rgba(124,58,237,0.38)" strokeWidth="1" />
+    {/* windows */}
+    <rect x="118" y="115" width="20" height="18" rx="2" fill="rgba(124,58,237,0.07)" stroke="rgba(124,58,237,0.3)" strokeWidth="1" />
+    <rect x="182" y="115" width="20" height="18" rx="2" fill="rgba(124,58,237,0.07)" stroke="rgba(124,58,237,0.3)" strokeWidth="1" />
+    {/* signal source dot at roof peak */}
+    <circle cx="160" cy="62" r="3.5" fill="var(--purple)" />
+    {/* device nodes */}
+    {[[45,75,'ZB'],[275,80,'TH'],[38,140,'MT'],[282,140,'MT']].map(([x,y,lbl],i) => (
+      <g key={'dv'+i}>
+        <circle cx={x} cy={y} r="11" fill="#130a20" stroke="rgba(124,58,237,0.55)" strokeWidth="1.3" />
+        <text x={x} y={y+4} textAnchor="middle" fill="rgba(124,58,237,0.72)" fontSize="5.5" fontFamily="monospace">{lbl}</text>
+      </g>
+    ))}
+    <text x="160" y="172" textAnchor="middle" fill="rgba(124,58,237,0.22)" fontSize="6.5" fontFamily="monospace">Zigbee · Thread · Matter</text>
+  </svg>
+);
+
 export const ILLUS = {
-  'vlan-nedir':            IlluVLAN,
+  'vlan-nedir':              IlluVLAN,
   'wireguard-nasil-calisir': IlluWireGuard,
-  'faiz-nedir':            IlluFaiz,
-  'dns-nedir':             IlluDNS,
-  'vpn-nedir':             IlluVPN,
-  'ssh-nedir':             IlluSSH,
-  'blockchain-nedir':      IlluBlockchain,
-  'tcp-ip-nedir':          IlluTCPIP,
+  'dns-nedir':               IlluDNS,
+  'vpn-nedir':               IlluVPN,
+  'ssh-nedir':               IlluSSH,
+  'blockchain-nedir':        IlluBlockchain,
+  'tcp-ip-nedir':            IlluTCPIP,
+  'docker-nedir':            IlluDocker,
+  'agentic-ai-nedir':        IlluAgenticAI,
+  'local-llm-nedir':         IlluLocalLLM,
+  'mcp-nedir':               IlluMCP,
+  'akilli-ev-protokolleri':  IlluAkilliEv,
 };
