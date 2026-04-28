@@ -1,4 +1,4 @@
-import { CAT } from '../data/content.js';
+import { CATEGORIES } from '../data/categories.js';
 
 export default function CatStrip({ active, setActive }) {
   return (
@@ -7,19 +7,22 @@ export default function CatStrip({ active, setActive }) {
       background: 'var(--white)', borderBottom: '1px solid var(--border)',
       padding: '0 2rem', display: 'flex', gap: '0', overflowX: 'auto',
     }}>
-      {['Tümü', ...Object.keys(CAT)].map(cat => {
-        const on = active === cat;
-        const m = CAT[cat];
+      {[null, ...CATEGORIES].map(cat => {
+        const isAll = cat === null;
+        const slug = isAll ? '' : cat.slug;
+        const label = isAll ? 'Tümü' : cat.label;
+        const color = isAll ? 'var(--teal)' : cat.color;
+        const on = active === slug;
         return (
-          <button key={cat} onClick={() => setActive(cat)} style={{
+          <button key={slug} onClick={() => setActive(slug)} style={{
             padding: '0.65rem 1rem', fontSize: '0.8rem', fontWeight: on ? 600 : 500,
             background: 'none', border: 'none', cursor: 'pointer',
             fontFamily: 'inherit', whiteSpace: 'nowrap',
-            color: on ? (m?.c || 'var(--teal)') : 'var(--muted)',
-            borderBottom: on ? `2px solid ${m?.c || 'var(--teal)'}` : '2px solid transparent',
+            color: on ? color : 'var(--muted)',
+            borderBottom: on ? `2px solid ${color}` : '2px solid transparent',
             transition: 'color .15s,border-color .15s', marginBottom: '-1px',
           }}>
-            {cat}
+            {label}
           </button>
         );
       })}

@@ -34,7 +34,7 @@ export default function Footer() {
         </div>
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1.25rem', display: 'flex', justifyContent: 'space-between' }}>
           <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.18)' }}>© 2025 anla.tr — Bütün hakları saklıdır.</span>
-          <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.18)' }}>Türkçe · Teknik · Ekonomi · Teknoloji</span>
+          <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.18)' }}>Türkçe · Teknik · Yazılım · Teknoloji</span>
         </div>
       </div>
     </footer>

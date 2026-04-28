@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CAT, CONTENT } from '../data/content.js';
+import { CONTENT } from '../data/content.js';
+import { CATEGORIES } from '../data/categories.js';
 
 export default function Nav({ onSearch }) {
   const navigate = useNavigate();
@@ -67,11 +68,10 @@ export default function Nav({ onSearch }) {
                 borderRadius: '10px', overflow: 'hidden', minWidth: '180px',
                 boxShadow: '0 16px 40px rgba(0,0,0,0.12)', zIndex: 300, marginTop: '4px',
               }}>
-                {Object.entries(CAT).map(([cat, m]) => (
-                  <button key={cat}
+                {CATEGORIES.map(cat => (
+                  <button key={cat.slug}
                     onClick={() => {
-                      const p = new URLSearchParams({ cat });
-                      navigate(`/?${p}`);
+                      navigate(`/?cat=${cat.slug}`);
                       setCatOpen(false);
                     }}
                     style={{
@@ -83,10 +83,10 @@ export default function Nav({ onSearch }) {
                     onMouseEnter={e => e.currentTarget.style.background = 'var(--bg)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'none'}
                   >
-                    <span style={{ width: 7, height: 7, borderRadius: '50%', background: m.c, display: 'inline-block', flexShrink: 0 }} />
-                    {cat}
+                    <span style={{ width: 7, height: 7, borderRadius: '50%', background: cat.color, display: 'inline-block', flexShrink: 0 }} />
+                    {cat.label}
                     <span style={{ marginLeft: 'auto', fontSize: '0.72rem', color: 'var(--dim)' }}>
-                      {CONTENT.filter(c => c.category === cat).length}
+                      {CONTENT.filter(c => c.category === cat.label).length}
                     </span>
                   </button>
                 ))}
